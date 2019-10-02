@@ -179,157 +179,129 @@ const accountClose = () => {
   signup.style.visibility = "visible"
 }
 
-const register = () => {
+let errorMsg = (msg,option) => {
+  let con3
+  let error = getId("errorMsg")
+  option === "signup" ? con3 = getId("signupCon3") : con3 = getId("signinCon3")
+  error.innerHTML = ""
+  con3.style.padding = "0"
+  error.innerHTML = msg
+  error.style.display = "unset"
+  return 
+}
+
+let sucessMsg = (msg,option) => {
+  let con3
+  let error = getId("errorMsg")
+  option === "signup" ? con3 = getId("signupCon3") : con3 = getId("signinCon3")
+  error.innerHTML = ""
+  con3.style.padding = "0"
+  error.innerHTML = msg
+  error.style.backgroundColor = "rgba(219, 241, 196, 0.9)"
+  error.style.color = "green"
+  error.style.border = "1px solid rgba(130, 243, 16, 0.9)"
+  error.style.display = "unset"
+  return 
+}
+
+const register = async () => {
   let fullName = getId("fullName")
   let email = getId("email")
   let pw = getId("pw")
   let confirmPw = getId("confirmPw")
-  let error = getId("errorMsg")
-  let con3 = getId("signupCon3")
-
-  let errorMsg = (err) => {
-    error.innerHTML = ""
-    con3.style.padding = "0"
-    error.innerHTML = err
-    return error.style.display = "unset"
-  }
-
-  let sucessMsg = (msg) => {
-    error.innerHTML = ""
-    con3.style.padding = "0"
-    error.innerHTML = msg
-    error.style.backgroundColor = "rgba(219, 241, 196, 0.9)"
-    error.style.color = "green"
-    error.style.border = "1px solid rgba(130, 243, 16, 0.9)"
-    error.style.display = "unset"
-  }
 
   if(!fullName.value) {
     fullName.focus()
-    return errorMsg("請輸入帳號名稱")
+    return errorMsg("請輸入帳號名稱", "signup")
   }
   if(!email.value || !email.value.includes("@")) {
     email.focus()
-    return errorMsg("請輸入您的Email")
+    return errorMsg("請輸入您的Email", "signup")
   }
   if(!pw.value) {
     pw.focus()
-    return errorMsg("請輸入密碼")
+    return errorMsg("請輸入密碼", "signup")
   }
   if(pw.value.length < 8) {
     pw.focus()
-    return errorMsg("密碼長度小於8， 請重新輸入密碼")
+    return errorMsg("密碼長度小於8， 請重新輸入密碼", "signup")
   }
   if(!confirmPw.value) {
     confirmPw.focus()
-    return errorMsg("請輸入確認密碼")
+    return errorMsg("請輸入確認密碼", "signup")
   }
   if(pw.value !== confirmPw.value) {
     confirmPw.focus()
-    return errorMsg("密碼與確認密碼不相符，請確認")
+    return errorMsg("密碼與確認密碼不相符，請確認", "signup")
   }
 
-  let ajaxArgs = {
+  let body = {
     name: fullName.value,
     email: email.value,
     pw: pw.value,
     confirmPw: confirmPw.value
   }
   
-  
-
-  ajax('POST', '/api/1.0/user/signup', ajaxArgs, null, (result) => {
-    if(result.error === "All fields required") return errorMsg("請輸入所有欄位")
-    if(result.error === "Invalid Token") return errorMsg("密碼各式錯誤，請確認")
-    if(result.error === "Email Taken") return errorMsg("Email已使用")
-    if(result.error === "Failed to signup") return errorMsg("註冊失敗")
-    if(result.error) return errorMsg("系統錯誤")
-    localStorage.setItem("accessToken", result.accessToken)
-    if(result.dp) localStorage.setItem("dp", result.dp)
-    sucessMsg("註冊成功!")
-    setTimeout(() => {
-      return window.location = "/index.html"
-    }, 1000);
-  })
+  let result = await fetching("/user/signup", "POST", {"Content-Type": "application/json"}, body)
+  if(result.error === "All fields required") return errorMsg("請輸入所有欄位", "signup")
+  if(result.error === "Invalid Token") return errorMsg("密碼各式錯誤，請確認", "signup")
+  if(result.error === "Email Taken") return errorMsg("Email已使用", "signup")
+  if(result.error === "Failed to signup") return errorMsg("註冊失敗", "signup")
+  if(result.error) return errorMsg("系統錯誤", "signup")
+  localStorage.setItem("accessToken", result.accessToken)
+  if(result.dp) localStorage.setItem("dp", result.dp)
+  sucessMsg("註冊成功!", "signup")
+  setTimeout(() => {
+    return window.location = "/index.html"
+  }, 1000)
 }
 
-const login = () => {
+const login = async () => {
   let email = getId("email")
   let pw = getId("pw")
-  let error = getId("errorMsg")
-  let con3 = getId("signinCon3")
-
-  let errorMsg = (err) => {
-    error.innerHTML = ""
-    con3.style.padding = "0"
-    error.innerHTML = err
-    return error.style.display = "unset"
-  }
-
-  let sucessMsg = (msg) => {
-    error.innerHTML = ""
-    con3.style.padding = "0"
-    error.innerHTML = msg
-    error.style.backgroundColor = "rgba(219, 241, 196, 0.9)"
-    error.style.color = "green"
-    error.style.border = "rgba(130, 243, 16, 0.9)"
-    error.style.display = "unset"
-  }
 
   if(!email.value || !email.value.includes("@")) {
     email.focus()
-    return errorMsg("請輸入您的Email")
+    return errorMsg("請輸入您的Email", "signin")
   } 
   if(!pw.value){
     pw.focus()
-    return errorMsg("請輸入您密碼")
+    return errorMsg("請輸入您密碼", "signin")
   }
 
-  let ajaxArgs = {
+  let body = {
     provider: "native",
     email: email.value,
     pw: pw.value
   }
 
-  ajax('POST', '/api/1.0/user/signin', ajaxArgs, null, (result) => {
-    let url = (window.location.href)
-    console.log(result)
-    if(result.error === "All fields required") return errorMsg("請輸入所有欄位")
-    if(result.error === "Invalid Token") return errorMsg("帳號/密碼錯誤")
-    if(result.error === "Failed to signin") return errorMsg("登入失敗")
-    if(result.error) return errorMsg("系統錯誤")
-    localStorage.setItem("accessToken", result.accessToken)
-    if(result.dp) localStorage.setItem("dp", result.dp)
-    console.log("result: ", result)
-    sucessMsg("歡迎回來!")
-    setTimeout(() => {
-      return window.location = url
-    }, 1000);
-  })
+  let result = await fetching("/user/signin", "POST", {"Content-Type": "application/json"}, body)
+  let url = window.location.href
+  if(result.error === "All fields required") return errorMsg("請輸入所有欄位", "signin")
+  if(result.error === "Invalid Token") return errorMsg("帳號/密碼錯誤", "signin")
+  if(result.error === "Failed to signin") return errorMsg("登入失敗", "signin")
+  if(result.error) return errorMsg("系統錯誤", "signin")
+  localStorage.setItem("accessToken", result.accessToken)
+  if(result.dp) localStorage.setItem("dp", result.dp)
+  sucessMsg("歡迎回來!", "signin")
+  setTimeout(() => {
+    return window.location = url
+  }, 1000)
 }
 
-const renderProfile = () => {
+const renderProfile = async () => {
   let con2 = getId("con2")
   let accessToken = localStorage.getItem("accessToken")
-  body = {
+  let body = {
     search: "basicInfo"
   }
 
-  fetch("/api/1.0/user/profile", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    render(result.data[0])
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
+  let result = await fetching("/user/profile", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, body)
+  console.log(result)
+  if(result.error) return window.location = "/index.html"
 
   let render = (response) => {
     let dp = getId('dp')
@@ -468,6 +440,8 @@ const renderProfile = () => {
       accept: "image/png, image/jpeg, image/png, image/gif"
     }}, information[1])
   }
+
+  render(result.data[0])
 }
 
 const editBasic = () => {
@@ -1257,40 +1231,30 @@ const updateMyRecipe = (recipeId) => {
 
 }
 
-const deleteRecipe = (recipeId) => {
+const deleteRecipe = async (recipeId) => {
   let accessToken = localStorage.getItem("accessToken")
   let li = getId(`${recipeId}list`) 
   let update = getId(`${recipeId}update`)
   let loading = getId("loading")
   body = {
-    status:"delete",
     recipeId: recipeId
   }
   let check = confirm("是否確認要刪除食譜")
   if(check === true) {
     loading.style.visibility = "visible"
-    fetch("/api/1.0/user/recipe", {
-      method:"POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(body)
-    }).then((result) => {
-      return (result.json())
-    }).then((result) => {
-      if(result.status === "Success") {
-        li.parentNode.removeChild(li)
-        update.parentNode.removeChild(update)
-        loading.style.visibility = "hidden"
-        return feedback("刪除成功", "error")
-      }
+    let result = await fetching("/user/recipe", "DELETE", {
+      "content-type": "application/json",
+      "Authorization": `Bearer ${accessToken}`
+    }, body)
+    if(result.status === "Success") {
+      li.parentNode.removeChild(li)
+      update.parentNode.removeChild(update)
       loading.style.visibility = "hidden"
-      feedback("刪除失敗", "error")
-    }).catch((error) => {
-      console.log(error)
-      // alert("系統錯誤")
-    })
+      feedback("刪除成功", "error")
+      return 
+    }
+    loading.style.visibility = "hidden"
+    feedback("刪除失敗", "error")
   }
 }
 

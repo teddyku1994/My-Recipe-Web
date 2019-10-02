@@ -29,7 +29,6 @@ module.exports = {
       container.image = result2.map(images => !images.image.includes("https://") ? `https://d1lpqhjzd6rmjw.cloudfront.net${images.image}` : images.image)
       return container
     })
-    console.log(newResult)
     let data = {
       data:newResult
     }

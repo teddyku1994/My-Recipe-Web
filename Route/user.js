@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const verification = require('../util/verification')
 const user = require('../dao/user')
+const profile = require('../dao/profile')
+const recipe = require('../dao/recipe')
 const favorite = require('../dao/favorite')
 const likes = require('../dao/likes')
-const util = require('../util/util')
-const profile = require('../dao/profile')
-const file = require('../util/file')
 const cache = require('../dao/cache')
-const recipe = require('../dao/recipe')
+const util = require('../util/util')
+const file = require('../util/file')
+const verification = require('../util/verification')
 
 router.use(express.json())
 
@@ -31,7 +31,7 @@ router.post('/user/signin', verification.verifyContentType, async (req, res) => 
 })
 
 router.post('/user/profile', verification.verifyContentType, verification.verifyToken, async (req,res) => {
-  let error = error => res.json(error)
+  let error = error => console.log(error)
   let body = req.body
   if(body.search === 'basicInfo') {
     let result = await profile.getInfo(req.userId, error)
@@ -47,6 +47,7 @@ router.post('/user/profile', verification.verifyContentType, verification.verify
   } 
 })
 
+//! Still require refatoring - Add delete S3 file
 router.post('/user/profile/updateFile', verification.verifyToken, file.uploadProfileImg, async (req, res) => {
   let error = error => res.json(error)
   let body = req.body
@@ -63,6 +64,7 @@ router.post('/user/profile/updateFile', verification.verifyToken, file.uploadPro
   return res.json(result)
 })
 
+//! Still require refatoring - Add delete S3 file
 router.post('/user/recipe/upload', file.uploadRecipe, async (req,res) => {
   if(!req.headers.authorization) {
     return res.redirect('/index.html')
@@ -82,6 +84,7 @@ router.post('/user/recipe/upload', file.uploadRecipe, async (req,res) => {
   }
 })
 
+//! Still require refatoring - Add delete S3 file
 router.post('/user/recipe/update', file.uploadRecipe, cache.deleteCahe, async (req,res) => {
   if(!req.headers.authorization) {
     return res.redirect('/index.html')
@@ -100,64 +103,48 @@ router.post('/user/recipe/update', file.uploadRecipe, cache.deleteCahe, async (r
   }
 })
 
-router.post('/user/recipe', async (req,res) => {
-  if(req.header('Content-Type') !== "application/json") {
-    return res.json(util.error('Header is not in application/json'))
-  }
-  if(!req.headers.authorization) {
-    return res.redirect('/index.html')
-  }
-  body = req.body
+router.post('/user/recipe', verification.verifyContentType, verification.verifyToken, async (req,res) => {
+  let body = req.body
   const {status} = req.body
-  let error = error => res.json(error)
-  let token = req.headers.authorization.replace('Bearer ', '')
-  let verify = await jwt.verifyToken(token)
-  if (verify.error) return res.redirect('/index.html')
-  let userId = verify.userId
+  let error = error => console.log(error)
+  let userId = req.userId
 
   if(status === "list"){
-    let result = await profile.listRecipe(userId, error)
-    return res.json(result)
+    let recipeList = await profile.listRecipe(userId, error)
+    return res.json(recipeList)
   } else if(status === "update"){
-    let result = await user.check(userId, body.recipeId, error)
-    if(result.length === 0) return res.json(util.error('Invalid Token'))
-    let result2 = await recipe.listDish(body.recipeId, error)
-    res.json(result2)
-  } else if(status === "delete") {
-    cache.deleteCahe2('recipePage', body.recipeId)
-    let result = await profile.deleteRecipe(body, userId, error)
-    res.json(result)
+    let userRecipe = await profile.userRecipe(userId, body.recipeId, error)
+    res.json(userRecipe)
   } else {
     res.json(util.error('Invalid Method'))
   }
 })
 
-router.post('/user/favorite', async (req, res) => {
-  if(req.header('Content-Type') !== "application/json") {
-    return res.json(util.error('Header is not in application/json'))
-  }
-  if(!req.headers.authorization || !req.headers.authorization.includes("Bearer")) {
-    return res.json(util.error('Not Authorized'))
-  }
-    let body = req.body
-    let error = error => res.json(util.error(error))
-    let token = req.headers.authorization.replace('Bearer ', '')
-    let verify = jwt.verifyToken(token)
-    if (verify.error) return res.redirect('/index.html')
+router.delete('/user/recipe', verification.verifyContentType, verification.verifyToken, async (req,res) => {
+  let body = req.body
+  let error = error => console.log(error)
+  cache.deleteCahe2('recipePage', body.recipeId)
+  let result = await profile.deleteRecipe(body, req.userID, error)
+  res.json(result)
+})
 
-    if(body.status === "save") {
-      let result = await favorite.insert(verify.userId, body.recipeId, error)
+router.post('/user/favorite', verification.verifyContentType, verification.verifyToken, async (req, res) => {
+    let body = req.body
+    let {status} = body
+    let error = error => console.log(error)
+    if(status === "save") {
+      let result = await favorite.insert(req.userId, body.recipeId, error)
       if(!result.insertId) return res.json(util.error('Insert Fail'))
       return res.json({status: "Success"})
-    } else if(body.status === "unsave") {
-      let result = await favorite.delete(verify.userId, body.recipeId, error)
+    } else if(status === "unsave") {
+      let result = await favorite.delete(req.userId, body.recipeId, error)
       if(!result.affectedRows) return res.json(util.error('Delete Fail'))
       return res.json({status: "Success"})
-    } else if(body.status === "check") {
-      let result = await favorite.check(verify.userId, body.recipeId, error)
+    } else if(status === "check") {
+      let result = await favorite.checkExist(req.userId, body.recipeId, error)
       return res.json(result)
-    } else if(body.status === "list") {
-      let result = await favorite.list(verify.userId, error)
+    } else if(status === "list") {
+      let result = await favorite.list(req.userId, error)
       return res.json(result)
     } else {
       res.json(util.error('Invalid Token'))
@@ -165,33 +152,24 @@ router.post('/user/favorite', async (req, res) => {
     
 })
 
-router.post('/user/like', async (req, res) => {
-  if(req.header('Content-Type') !== "application/json") {
-    return res.json(util.error('Header is not in application/json'))
+router.post('/user/like', verification.verifyContentType, verification.verifyToken, async (req, res) => {
+  let body = req.body
+  let {status} = body
+  let error = error => console.log(error)
+  if(status === "like") {
+    let result = await likes.insert(req.userId, body.recipeId, error)
+    if(!result.insertId) return res.json(util.error('Insert Fail'))
+    return res.json({status: "Success"})
+  } else if(status === "unlike") {
+    let result = await likes.delete(req.userId, body.recipeId, error)
+    if(!result.affectedRows) return res.json(util.error('Delete Fail'))
+    return res.json({status: "Success"})
+  } else if(status === "check") {
+    let result = await likes.checkExist(req.userId, body.recipeId, error)
+    return res.json(result)
+  } else {
+    res.json(util.error('Invalid Token'))
   }
-  if(!req.headers.authorization || !req.headers.authorization.includes("Bearer")) {
-    return res.json(util.error('Not Authorized'))
-  }
-    let body = req.body
-    let error = error => res.json(util.error(error))
-    let token = req.headers.authorization.replace('Bearer ', '')
-    let verify = jwt.verifyToken(token)
-    if (verify.error) return res.redirect('/index.html')
-
-    if(body.status === "like") {
-      let result = await likes.insert(verify.userId, body.recipeId, error)
-      if(!result.insertId) return res.json(util.error('Insert Fail'))
-      return res.json({status: "Success"})
-    } else if(body.status === "unlike") {
-      let result = await likes.delete(verify.userId, body.recipeId, error)
-      if(!result.affectedRows) return res.json(util.error('Delete Fail'))
-      return res.json({status: "Success"})
-    } else if(body.status === "check") {
-      let result = await likes.check(verify.userId, body.recipeId, error)
-      return res.json(result)
-    } else {
-      res.json(util.error('Invalid Token'))
-    }
 })
 
 module.exports = router

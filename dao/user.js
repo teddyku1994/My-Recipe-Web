@@ -91,24 +91,19 @@ module.exports = {
       return util.error('Invalid Token')
     }
   },
-  check: async (userId, recipeId, error) => {
-    let sql = `SELECT * FROM recipe WHERE id = ${recipeId} AND user_id = ${userId}`
-    let result = await connection.sqlQuery(sql, error)
-    return result
-  },
   changePw: async (body, userId, error) => {
     let oldPw = body.oldPw
     let newPw = body.newPw
     if(!oldPw || !newPw) return util.error('Invalid Token')
-    let sql = `SELECT * FROM user WHERE id = ${userId}`
-    let result = await connection.sqlQuery(sql, error)
+    let sql = 'SELECT password FROM user WHERE id = ?'
+    let result = await connection.sqlQuery(sql, userId, error)
     let isMatch = await bcrypt.compare(oldPw, result[0].password)
-    console.log(isMatch)
     if(!isMatch) return util.error('Invalid Password')
-    let password = await bcrypt.hash(newPw, 10)
-    let sql2 = `UPDATE user SET password = '${password}' WHERE id = ${userId}`
-    let result2 = await connection.sqlQuery(sql2, error)
+    newPw = await bcrypt.hash(newPw, 10)
+    let sql2 = `UPDATE user SET password = ? WHERE id = ?`
+    let result2 = await connection.sqlQuery(sql2, [newPw, userId], error)
+    console.log(result2)
     if(result2.affectedRows === 1) return {status:"Success"}
-    return result2
+    return util.error("Invalid Token")
   }
 }

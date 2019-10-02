@@ -1,6 +1,5 @@
-const getId = (selector) => {
-	return document.getElementById(selector);
-};
+const getId = selector => document.getElementById(selector)
+const getClass = selector => document.getElementsByClassName(selector)
 
 const createElement = (tagName,settings,parentElement) => {
 	let obj=document.createElement(tagName);
@@ -121,18 +120,24 @@ const Market = () => {
   })
 }
 
-// const fetching = (src, method, headers, body) =>{
-// 	fetch(src, {
-//     method:method,
-//     headers: headers,
-//     body: JSON.stringify(body)
-//   }).then((result) => {
-//     return (result.json())
-//   }).then((result) => {
-// 		console.log(result)
-//     return result
-//   }).catch((error) => {
-//     console.log(error)
-//     alert("系統錯誤")
-//   })
-// }
+const fetching = async (src, method, headers, body) =>{
+	try {
+		let options
+		headers ?
+		options = {
+			method:method,
+			headers: headers,
+			body: JSON.stringify(body)
+		}
+		: options = {
+			method:method,
+			body: JSON.stringify(body)
+		}
+		let response = await fetch(`/api/1.0${src}`, options)
+		let result = await response.json()
+		return result
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}

@@ -1,6 +1,7 @@
 const connection = require('./promiseFunc')
 const util = require('../util/util')
 const mysql = require('../db/dbConnect')
+const recipe = require('./recipe')
 
 module.exports = {
   getInfo: async (userId, error) => {
@@ -30,11 +31,17 @@ module.exports = {
     }
   },
   listRecipe: async (userId, error) => {
-    let sql = `SELECT * FROM recipe WHERE user_id = ${userId}`
-    let result = await connection.sqlQuery(sql, error)
+    let sql = 'SELECT * FROM recipe WHERE user_id = ?'
+    let result = await connection.sqlQuery(sql, userId, error)
     if(result.length === 0) return util.error('No Result')
     let data = {data:result}
     return data
+  },
+  userRecipe: async (userId, recipeId, error) => {
+    let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
+    let checkExist = await connection.sqlQuery(sql, [recipeId, userId], error)
+    let uerRecipe = await recipe.listDish(checkExist[0].id)
+    return uerRecipe
   },
   createRecipe: (body, file, userId) => {
     let {mainImg, images} = file
@@ -172,11 +179,11 @@ module.exports = {
     })
   },
   deleteRecipe: async (body, userId, error) => {
-    let sql = `SELECT * FROM recipe WHERE id = ${body.recipeId} AND user_id = ${userId}`
-    let result = await connection.sqlQuery(sql, error)
+    let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
+    let result = await connection.sqlQuery(sql, [body.recipeId, userId], error)
     if (!result) return util.error('Invalid Token')
-    let sql2 = `DELETE FROM recipe WHERE id = ${body.recipeId}`
-    let result2 = await connection.sqlQuery(sql2, error)
+    let sql2 = 'DELETE FROM recipe WHERE id = ?'
+    await connection.sqlQuery(sql2, body.recipeId, error)
     return({status:"Success"})
   }
 }
