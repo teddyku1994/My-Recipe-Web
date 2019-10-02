@@ -4,12 +4,12 @@ const util = require('../util/util')
 module.exports = {
   insert: async(userId, recipeId, error) => {
     let sql = 'INSERT INTO likes (user_id, recipe_id) VALUES (?)'
-    let result = await connection.sqlQuery(sql, [userId, recipeId], error)
+    let result = await connection.sqlQuery(sql, [[userId, recipeId]], error)
     let sql2 = 'SELECT COUNT(*) FROM likes WHERE recipe_id = ?'
     let count = await connection.sqlQuery(sql2, recipeId, error)
     let sql3 = 'UPDATE recipe SET likes = ? WHERE id = ?'
     await connection.sqlQuery(sql3, [count[0]['COUNT(*)'], recipeId], error)
-    if(result.insertId)return {status:"Success"}
+    if(result.insertId)return result
     return util.error('Invalid Token')
   },
   delete: async(userId, recipeId, error) => {
@@ -19,8 +19,8 @@ module.exports = {
     let count = await connection.sqlQuery(sql2, recipeId, error)
     let sql3 = 'UPDATE recipe SET likes = ? WHERE id = ?'
     await connection.sqlQuery(sql3, [count[0]['COUNT(*)'], recipeId], error)
-    console.log(result)
-    return result
+    if(result.affectedRows) return result
+    return util.error('Invalid Token')
   },
   count: async (recipeId, error) => {
     let sql = 'SELECT COUNT(*) FROM likes WHERE recipe_id = ?'

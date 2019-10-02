@@ -69,7 +69,7 @@ module.exports = {
             steps: steps,
             images: images
           }
-          await crawl.recipeCrawl(body)
+          await crawl.recipeCrawlInsert(body)
           console.log("complete")
         } else {
           console.log("Duplicate")
@@ -138,7 +138,7 @@ module.exports = {
             images: images.slice(1)
           }
           console.log(body)
-          await crawl.recipeCrawl(body)
+          await crawl.recipeCrawlInsert(body)
           console.log('Inserted')
         } else {
           console.log('Duplicate')

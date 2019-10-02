@@ -4,13 +4,15 @@ const util = require('../util/util')
 module.exports = {
   insert: async (userId, recipeId, error) => {
     let sql = 'INSERT INTO favorite (user_id, recipe_id) VALUES (?)'
-    let result = await connection.sqlQuery(sql, [userId,recipeId], error)
-    return result
+    let result = await connection.sqlQuery(sql, [[userId,recipeId]], error)
+    if(result.insertId)return result
+    return util.error('Invalid Token')
   },
   delete: async(userId, recipeId, error) => {
     let sql = 'DELETE FROM favorite WHERE user_id = ? AND recipe_id = ?'
     let result = await connection.sqlQuery(sql, [userId, recipeId], error)
-    return result
+    if(result.affectedRows) return result
+    return util.error('Invalid Token')
   },
   list: async (userId, limit, page, error) => {
     if(isNaN(page) || isNaN(limit)) return util.error("Invalid Token")
@@ -32,14 +34,6 @@ module.exports = {
     let total = await connection.sqlQuery(sql2, userId, error)
     let totalPage = total[0]['COUNT(*)']
     util.paging(limit, totalPage, page, data)
-    // let newLimit = (page+1)*limit
-    // if(totalPage - newLimit > 0) {
-    //   data.page = page+1
-    // }
-    // if(Math.floor(totalPage/limit) > 0 && totalPage > limit) {
-    //   data.totalPage = Math.floor(totalPage/limit)
-    // }
-    // console.log(data)
     return data
   },
   checkExist: async(userId, recipeId, error) => {

@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const user = require('../dao/user')
 const profile = require('../dao/profile')
-const recipe = require('../dao/recipe')
 const favorite = require('../dao/favorite')
 const likes = require('../dao/likes')
 const cache = require('../dao/cache')
@@ -131,6 +130,8 @@ router.delete('/user/recipe', verification.verifyContentType, verification.verif
 router.post('/user/favorite', verification.verifyContentType, verification.verifyToken, async (req, res) => {
     let body = req.body
     let {status} = body
+    body.recipeId = parseInt(body.recipeId)
+    if(isNaN(body.recipeId)) return res.json(util.error('Invalid Token'))
     let error = error => console.log(error)
     if(status === "save") {
       let result = await favorite.insert(req.userId, body.recipeId, error)
@@ -155,6 +156,8 @@ router.post('/user/favorite', verification.verifyContentType, verification.verif
 router.post('/user/like', verification.verifyContentType, verification.verifyToken, async (req, res) => {
   let body = req.body
   let {status} = body
+  body.recipeId = parseInt(body.recipeId)
+  if(isNaN(body.recipeId)) return res.json(util.error('Invalid Token'))
   let error = error => console.log(error)
   if(status === "like") {
     let result = await likes.insert(req.userId, body.recipeId, error)

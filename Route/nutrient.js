@@ -1,7 +1,6 @@
 const express = require('express')
 const nutrient = require('../dao/nutrient')
 const cache = require('../dao/cache')
-const jwt = require('../util/verification')
 const router = express.Router()
 
 router.use(express.json())

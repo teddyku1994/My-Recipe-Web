@@ -363,7 +363,6 @@ const previousPages = (num, args, totalPage) => {
 
 const save = () => {
   let accessToken = localStorage.getItem("accessToken")
-  let exp = localStorage.getItem("exp")
   let url = document.URL
   let params = new URL(url).searchParams
   let id = params.get("id")
@@ -380,13 +379,6 @@ const save = () => {
     return
   }
   
-  if(accessToken && exp - Date.now() <= 0) {
-    window.localStorage.removeItem("accessToken")
-    window.localStorage.removeItem("exp")
-    alert("請重新登入，謝謝")
-    return setTimeout(() => window.location = "/index.html", 3000)
-  }
-
   fetch("/api/1.0/user/favorite", {
     method:"POST",
     headers: {
@@ -410,7 +402,6 @@ const save = () => {
 
 const unsave = () => {
   let accessToken = localStorage.getItem("accessToken")
-  let exp = localStorage.getItem("exp")
   let url = document.URL
   let params = new URL(url).searchParams
   let id = params.get("id")
@@ -425,12 +416,6 @@ const unsave = () => {
     recipeMsg.offsetWidth
     recipeMsg.className = "requireAcc"
     return
-  }
-  if(accessToken && exp - Date.now() <= 0) {
-    window.localStorage.removeItem("accessToken")
-    window.localStorage.removeItem("exp")
-    alert("請重新登入，謝謝")
-    return setTimeout(() => window.location = "/index.html", 3000)
   }
 
   fetch("/api/1.0/user/favorite", {
