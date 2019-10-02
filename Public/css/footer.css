@@ -1,0 +1,51 @@
+#mainFooter {
+  background-color: rgb(36,36,36);
+  color: #FFF;
+  font-family: 'Noto Sans TC' , sans-serif;
+  letter-spacing: 3px;
+  padding: 1em 0;
+  flex: 1;
+}
+
+#footerCon {
+  display: flex;
+  font-size: 20px;
+}
+
+.footerLogo {
+  border-right: 2px solid #FFF;
+  width: 50%;
+  height: 80%;
+  text-align: center;
+}
+
+.footerLogo > img {
+  width: 15%;
+}
+
+.contacts {
+  margin-top: 8px;
+  width: 50%;
+  text-align: center;
+}
+
+.contacts > p {
+  margin: 0 0 2%;
+  font-size: 18px;
+}
+
+.contacts > img {
+  margin: 0 1%;
+  width: 35px;
+  height: 35px;
+}
+
+.contacts > img:hover {
+  cursor: pointer;
+}
+
+#copyright {
+  font-size: 12px;
+  margin-top: 1em;
+  text-align: center;
+}

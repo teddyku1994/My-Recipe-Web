@@ -1,0 +1,167 @@
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+#mainImageCon {
+  text-align: center;
+}
+
+#mainImage {
+  border-radius: 15px;
+  width: 30em;
+  height: 20em;
+}
+
+#features {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1em;
+}
+
+#features > div {
+  display: flex;
+  justify-content: space-around;
+}
+
+#hearted {
+  display: none;
+}
+
+#liked {
+  display: none;
+  margin-right: 2px;
+}
+
+#like {
+  margin-right: 2px;
+}
+
+#likeAmount {
+  margin-right:17px;
+  align-self: flex-end;
+  color: orange;
+  font-size: 12px;
+}
+
+#fbShare {
+  height: 30px;
+  width: 30px;
+}
+
+#fbShare > a > img {
+  width: 100%;
+}
+
+#features > div:hover {
+  cursor: pointer;
+}
+
+#features > div > img {
+  width: 30px;
+  height: 30px;
+}
+
+.upperbanner {
+  text-align: center;
+  width: 80%;
+  align-self: center;
+  margin: 2% 0;
+  font-size: 35px;
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-weight: bold;
+}
+
+#background2 {
+  border-top: 1.5px solid rgba(255, 165, 0, 0.8);
+  border-bottom: 1.5px solid rgba(255, 165, 0, 0.8);
+  margin: 0 0 5%;
+  width: 80%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  align-self: center;
+}
+
+#con2 {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 3%;
+  flex-wrap: wrap;
+  border-bottom: 1.5px solid rgba(255, 165, 0, 0.8);
+}
+
+.ingredients {
+  width: 45%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+}
+
+.ingredients > div {
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+#con3 {
+  width: 100%;
+  padding: 1em 1em 0;
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-size: 20px;
+}
+
+.method {
+  font-size:40px;
+  text-align: center;
+  margin-bottom: 3%;
+  font-family: 'Noto Sans TC' , sans-serif;
+  letter-spacing: 3px;
+  font-weight: bold;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 3%;
+  margin-bottom: 3%;
+  border-bottom: 1px dashed rgba(255, 166, 0, 0.5) 
+}
+
+.image {
+  width: 30%;
+}
+
+.image > img {
+  width: 100%;
+  border-radius: 15px;
+  height: 14rem;
+}
+
+.stepCon {
+  width: 57.5%;
+  letter-spacing: 3px;
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-size: 20px;
+}
+
+.stepNum {
+  margin-bottom: 5%;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif; 
+  font-size: 30px;
+  color: orange
+}
+
+.finish {
+  font-size:40px;
+  text-align: center;
+  margin-bottom: 3%;
+  font-family: 'Noto Sans TC' , sans-serif;
+  letter-spacing: 3px;
+  font-weight: bold;
+}

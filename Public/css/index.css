@@ -1,0 +1,226 @@
+@import "bareBone.css";
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+#background1 {
+  background: url("../img/background/background1.jpg") no-repeat center right fixed;
+  background-size: cover;
+  height: 37em;
+  align-items: flex-start;
+}
+
+#welcome {
+  font-size: 9em;
+  font-family:'Noto Sans TC' , sans-serif; 
+  margin-left: 8%;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: orange;
+  animation: fadeIn 3s;
+  animation-fill-mode: forwards;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from {
+    left: -20%;
+    opacity: 0;
+  }
+  to {
+    left:0%;
+    opacity: 1;
+  }
+}
+
+
+#slogan {
+  font-size: 2em;
+  font-family: 'Noto Sans TC' , sans-serif; 
+  margin-left: 10%;
+  letter-spacing: 1px;
+  color: white;
+  animation: fadeIn 3s;
+  animation-fill-mode: forwards;
+  position: relative;
+}
+
+#background2 {
+  margin: 3% 0 5%;
+  width: 90%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  align-self: center;
+}
+
+#con2 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+#hotsTitle {
+  margin-top: 0;
+  padding-bottom: 0.8em;
+  width: 70%;
+  text-align: center;
+  border-bottom: 3px solid orange;
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-weight: bold;
+}
+
+.hotsDish {
+  width: 20%;
+  margin: 1em;
+}
+
+.hotsDish > a > img {
+  width: 100%;
+  border-radius: 10px;
+  height: 10em;
+}
+
+.hotsBanner {
+  margin-top: 0;
+  padding-bottom: 1em;
+  width: 70%;
+  border-bottom: 3px solid rgb(247, 173, 36);
+}
+
+#background3 {
+  background: url("../img/background/background4.jpeg") no-repeat center right fixed;
+  background-size: cover;
+  height: 30em;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#background4 {
+  background-color: rgb(247, 173, 36);
+  height: 30em;
+  display: flex;
+  flex-direction: column;
+}
+
+.search_boxTitle {
+  text-align: center;
+  font-family: 'Noto Sans TC' , sans-serif;
+  font-weight: bold;
+  font-size: 3em;
+  margin: 1em 0 0;
+  color: white;
+  border-bottom: 4px solid white;
+  padding-bottom: 0.5em;
+  opacity: 0;
+  transition: 0.3s;
+  width: 70%;
+  align-self: center;
+}
+
+.search_boxTitle.show {
+  transition: 0.5s;
+  opacity: 1;
+}
+
+#background5 {
+  background: url("../img/background/background2.jpg") no-repeat center right fixed;
+  background-size: cover;
+  height: 30em;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Search Box */
+
+.search_box{
+  position: relative;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  height: 60px;
+  border-radius: 40px;
+  padding: 10px;
+  width: 3.8em;
+  transition: 0.5s
+}
+
+.search_box:hover {
+  width: 60%
+}
+
+.search_box:hover > .search_txt{
+  width: 90%;
+  padding: 0 6px;
+}
+
+.search_box:hover > .search_btn{
+  color: #e84118;
+  background: white;
+}
+
+.search_btn{
+  color:white;
+  float: right;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2f3640;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search_txt{
+  border:none;
+  background: none;
+  outline: none;
+  float: left;
+  padding: 0;
+  color: #2f3640;
+  font-size: 20px;
+  transition: 0.4s;
+  line-height: 40px;
+  width: 0px;
+}
+
+.scrollDown {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  top: 5%;
+  font-size: 3.5em;
+  font-family:'Noto Sans TC' , sans-serif;
+  color: white; 
+	-webkit-animation: slide-top 1s ease-in-out infinite alternate-reverse both;
+  animation: slide-top 1s ease-in-out infinite alternate-reverse both;
+}
+
+ @-webkit-keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+  }
+}
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+  }
+}

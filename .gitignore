@@ -1,0 +1,11 @@
+#npm module
+/node_modules
+
+# dotenv enviroment variable
+.env
+
+#sql datas
+*.sql
+
+# others
+.DS_Store

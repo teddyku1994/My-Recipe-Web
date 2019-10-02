@@ -1,0 +1,417 @@
+@import "bareBone.css";
+
+main {
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40rem;
+  margin-top: 6.5rem;
+}
+
+#leftCon,
+#rightCon {
+  font-family:'Noto Sans TC' , sans-serif; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+#leftCon {
+  width: 25%;
+  height: 65%;
+  border-right: 4px solid rgb(255, 194, 80);
+  justify-content: space-around;
+  letter-spacing: 2px;
+}
+
+#rightCon {
+  width: 65%;
+}
+
+#rightCon > h1 {
+  padding-bottom: 10px;
+  border-bottom: 3px solid rgb(255, 194, 80);
+  letter-spacing: 2px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-left: 20%;
+}
+
+.content > div {
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.content > div:hover {
+  font-size: 1.7rem;
+  color: rgb(255, 194, 80);
+  border-bottom: 2px solid rgb(255, 194, 80);
+}
+
+.searchBoxCon{
+  position: relative;
+  top: 25%;
+  left: 4%;
+  transform: translate(-50%, -50%);
+  background: white;
+  height: 60px;
+  border-radius: 40px;
+  padding: 10px;
+  width: 3.8em;
+  transition: 0.5s
+}
+
+.searchBoxCon.widen {
+  width: 60%;
+  left: 30%;
+  -webkit-box-shadow: 0px 0px 10px 1px rgb(255, 194, 80);
+  -moz-box-shadow: 0px 0px 10px 1px rgb(255, 194, 80);
+  box-shadow: 0px 0px 10px 1px rgb(255, 194, 80);
+  border: 1px solid rgb(255, 194, 80)
+}
+
+.searchText.widen{
+  width: 90% !important;
+  padding: 0 3em;
+}
+
+.searchBtn.widen{
+  color: #e84118;
+  background: white;
+}
+
+.searchBtn{
+  color:white;
+  float: right;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2f3640;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.searchText{
+  border:none;
+  background: none;
+  outline: none;
+  float: left;
+  padding: 0;
+  color: #2f3640;
+  font-size: 20px;
+  transition: 0.4s;
+  line-height: 40px;
+  width: 0px;
+}
+
+#instruction {
+  margin-top: 23%;
+  /* border: 3px dashed rgb(255, 194, 80);
+  background-color: rgb(255, 194, 80, 0.35); */
+  border: 3px dashed rgba(94, 94, 94, 0.452);
+  background-color: rgba(204, 204, 204, 0.418);
+  border-radius: 15px;
+  padding: 0.5rem;
+}
+
+#marketResultCon {
+  height: 0;
+  width: 100%;
+  margin-top: 2%;
+  overflow: hidden;
+  transition: 0.5s;
+  display: flex;
+  flex-direction: column;
+}
+
+#marketDataCon{
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-top: 1em;
+  letter-spacing: 2px;
+}
+
+#greenImgCon,
+#greenDataCon {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+#greenImgCon {
+  justify-content: space-around;
+}
+
+#greenImg {
+  height: 100%;
+  width: 50%;
+  border-radius: 100%;
+}
+
+#greenDataCon {
+  flex-direction: column;
+}
+
+#greenData {
+  width: 75%;
+}
+
+#greenData > h3 {
+  font-size: 18px;
+}
+
+#greenTitle {
+  font-size: 22px;
+  margin-top: 0;
+}
+
+.price {
+  font-size: 16px;
+}
+
+#traceCon {
+  margin-top: 4%;
+  width: 75%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+#trace {
+  border: none;
+  font-size: 14px;
+  background-color: rgb(255, 194, 80);
+  color: #ffffff;
+  font-weight: bold;
+  padding: 0.25em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#trace.traceHover:hover {
+  background-color: orangered !important;
+  padding: 0.25em 2em;
+}
+
+#searchRecom {
+  width: 90%;
+  align-self: center;
+}
+
+#searchRecom > h2 {
+  margin-bottom: 0;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+#otherResult {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0.5em;
+}
+
+.recomName {
+  font-size: 14px;
+  background-color: #ccc;
+  text-align: center;
+  border-radius: 20px;
+  cursor: pointer;
+  padding: 1px 1rem;
+  margin: 0.25rem 0.5rem 0.25em 0;
+  letter-spacing: 2px;
+}
+
+.recomName:hover {
+  color: white;
+  background-color: rgb(161, 161, 161)
+}
+
+#traceList {
+  width: 100%;
+  overflow: hidden;
+  transition: 0.5s;
+  display:none;
+  opacity: 0;
+  display:flex;
+  flex-direction: column;
+}
+
+#updatePolicy {
+  align-self: flex-end;
+  margin: 2% 0 1em;
+}
+
+.updatePolicy {
+  font-size: 12px;
+  margin: 0 0 2px;
+}
+
+#tableCon {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#columnTitle {
+  width: 100%;
+  background-color: rgb(255, 194, 80);
+  display: flex;
+  border-radius: 5px;
+  padding: 0.25em 0;
+  margin-bottom: 0.5em;
+}
+
+.columnTag,
+.traceInfo {
+  color: #2f3640;
+  text-align: center;
+}
+
+#column5,
+.delTrace {
+  width: 6%;
+}
+
+#column1,
+.nameTag {
+  width: 25%
+}
+
+
+#column2,
+#column3,
+#column4,
+.curPrice,
+.oldPrice,
+.priceDiff {
+  width: 23%;
+}
+
+.columnTag {
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+}
+
+.traceInfo {
+  font-size: 14px;
+}
+
+.delTrace {
+  color: red;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.delTrace:hover {
+  font-size: 16px;
+}
+
+.priceCon {
+  display: flex;
+  border-bottom: 1px dashed #2f3640;
+  padding-bottom: 5px;
+  margin: 0 0 5px;
+}
+
+#loadImg {
+  position: absolute;
+  transition: 0.3s;
+  display: none;
+  top:35%
+}
+
+#traceMsg {
+  position: absolute;
+  right: 0;
+  top: 20%;
+  padding: 0.5rem 3rem;
+  text-align: center;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+#traceMsg.popGreen {
+  background-color: rgba(193, 248, 134, 0.568);
+  color: green;
+  border: 2px solid rgba(88, 165, 88, 0.596);
+}
+
+#traceMsg.popRed {
+  color: rgb(216, 0, 0);
+  border: 1.25px solid rgba(253, 148, 148, 0.808);
+  background-color: rgba(255, 145, 145, 0.178);
+}
+
+#traceMsg.popRed,
+#traceMsg.popGreen {
+  animation: popOut 2s
+}
+
+#searchMsg {
+  position: absolute;
+  top: 0;
+  padding: 0.5rem 10rem;
+  text-align: center;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+#searchMsg.noResult {
+  color: rgb(216, 0, 0);
+  border: 1.25px solid rgb(255, 89, 89);
+  background-color: rgb(248, 165, 165);
+  animation: popOut2 3s
+}
+
+@keyframes popOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    right: 5%;
+    opacity: 1;
+  }
+  100% {
+    right: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes popOut2 {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    top: 20%;
+    opacity: 1;
+  }
+  70% {
+    top: 20%;
+    opacity: 1;
+  }
+  100% {
+    top: 0;
+    opacity: 0;
+  }
+}

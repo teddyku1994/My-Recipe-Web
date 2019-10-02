@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>菜價查詢</title>
+  <script src="https://kit.fontawesome.com/e8f0007a6c.js"></script>
+  <link rel="stylesheet" href="./css/marketPlace.css">
+</head>
+<body>
+  <div id="searchCon">
+    <div class="btn_close">
+      <a id="btn_close" onclick="closeSearch()">&times;</a>
+    </div>
+    <div class="title">用菜名找食譜</div>
+    <div id="searchBarCon">
+      <input id="searchBar" type="text" placeholder="輸入菜名...">
+    </div>
+    <div class="searchClick" onclick="recipeSearch()">Search</div>
+    <div class="title">用食材找食譜</div>
+    <div id="smartSearch">
+      <input type="text" class="smartSearch" placeholder="輸入食材...">
+    </div>
+    <div id="add">
+      <input type="button" value="新增" class="add" onclick="add()">
+    </div>
+    <div class="searchClick" onclick="recipeSearch2()">Search</div>
+    <div class="title">熱門搜尋</div>
+    <div id="hotKeywords"></div>
+  </div>
+  <div id="nutrientCon">
+    <div class="close">
+        <a id="close" onclick="closeNut()">&times;</a>
+    </div> 
+    <div id="title">食材營養 SEARCH</div>
+    <div id="describe">輸入你想知道的食材質詢!</div>
+    <div id="nutSearchCon">
+      <input type="text" id="nutSearch" placeholder="輸入食材...">
+      <img src="./img/icon/search.png" alt="Search" onclick="nutSearchClick()">
+    </div>
+    <div class="nutScene">
+      <div class="nutflipCard">
+        <div id="nutList" class="flipFace" ></div>
+        <div id="nutCard" class="flipFace">
+          <div class="nutTitle">營養成分</div>
+          <div class="describe">每一份量 100公克</div>
+          <div id="info">
+            <div class="info">
+              <div id="calories">熱量</div>
+            </div>
+            <div class="info">
+              <div id="protein">蛋白質</div>
+            </div>
+            <div class="info">
+              <div id="totalFat">脂肪</div>
+            </div>
+            <div class="info">
+              <div id="satFat">飽和脂肪</div>
+            </div>
+            <div class="info">
+              <div id="carbonhydrate">碳水化合物</div>
+            </div>
+            <div class="info">
+              <div id="dietFiber">膳食纖維</div>
+            </div>
+            <div class="info">
+              <div id="sugar">糖</div>
+            </div>
+            <div class="calInfo">
+              <div id="sodium">鈉</div>
+            </div>
+            <div id="vit">
+              <div class="infos">
+                <div id="vitE">維他命E</div>
+              </div>
+              <div class="infos">
+                <div id="vitB2">維他命B2</div>
+              </div>
+              <div class="infos">
+                <div id="vitC">維他命C</div>
+              </div>
+              <div class="infos">
+                <div id="cal">鈣</div>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+    </div>  
+  </div>
+  <div id="signupCon"></div>
+  <div id="signinCon">
+    <div class="fb-login-button" id="fbLogin" scope="public_profile,email"
+    onlogin="checkLoginState();" data-width="" data-size="large" data-button-type="login_with" data-auto-logout-link="false" data-use-continue-as="false"></div>
+  </div>
+  <header id="mainHeader">
+    <div id="logo">
+      <a href="./index.html">
+        <img src="./img/icon/logo.png" alt="image">
+      </a>
+    </div>
+    <div id="navContainer">
+      <ul id="mainNav">
+      <li><a id="search" onclick="Search()">食譜搜尋</a></li>
+      <li><a id="nutrient" onclick="Nutrient()">營養資訊</a></li>
+      <li><a id="search" onclick="Market()">菜價查詢</a></li>
+      <li><a id="signin" onclick="Signin()">登入</a></li>
+      </ul>
+      <div id="signup" onclick="Signup()">註冊</div>
+      <div id="profile" onclick="Profile()">
+          <img id="profileDp" src="./img/icon/profile.png" alt="">
+      </div>
+    </div>
+  </header>
+  <main>
+    <div id="leftCon">
+      <div class="content">
+        <div id="searchTitle" onclick="searchPrice()">菜價查詢</div>
+        <div id="listTitle" onclick="priceList()">關注清單</div>
+      </div>
+    </div>
+    <div id="rightCon">
+      <h1 id="myMarketTitle">菜價查詢</h1>
+      <div id="traceMsg"></div>
+      <div id="searchMsg"></div>
+      <div class="searchBoxCon" id="searchBoxCon">
+        <input id="searchText" class="searchText" type="text" name="product_id" placeholder="請輸入菜/水果名稱...">
+        <a id="searchBtn" class="searchBtn" onclick="marketSearch()">
+            <i class="fas fa-search"></i>
+        </a>
+      </div>
+      <div id="instruction">
+        <strong>一般查詢:</strong> 輸入 "菜/水果名稱"<br> 
+        <strong>精準查詢:</strong> "菜/水果種類" + "-" + "全名"<br> <strong>Example:</strong> "蘋果-富士"</div>
+      <div id = "loadImg">
+          <img class = "loadImg" src="https://cdn.dribbble.com/users/645440/screenshots/3266490/attachments/701977/loader-2_food.gif" alt="">
+      </div>
+      <div id="marketResultCon">
+        <div id = "marketDataCon">
+            <div id="greenImgCon">
+              <img id="greenImg" src="" alt="Search Item Image">
+            </div>
+            <div id="greenDataCon">
+              <div id="greenData">
+                <h2 id="greenTitle"></h2>
+                <h3>本週平均批發價:</h3>
+                <div class="price" id="wholesalePrice"></div>
+                <h3>預估零售價:</h3>
+                <div class="price" id="retailPrice"></div>
+              </div>
+              <div id="traceCon">
+                <input type="button" class="traceHover" name="trace" id="trace" value="關注">
+              </div>
+            </div>
+        </div>
+        <div id="searchRecom">
+          <h2 id="othersTitle">其他結果:</h2>
+          <div id="otherResult"></div>
+        </div>
+      </div>
+      <div id="traceList"></div>
+    </div>
+  </main>
+  <footer id="mainFooter">
+    <div id="footerCon">
+      <div class="footerLogo">
+        <img src="./img/icon/logo2.png" alt="Logo">
+      </div>
+      <div class="contacts">
+        <p>關注我們</p>
+        <img src="./img/icon/facebook.png" alt="" class="fb">
+        <img src="./img/icon/twitter.png" alt="" class="twitter">
+        <img src="./img/icon/line.png" alt="" class="line">
+      </div>
+    </div>
+    <div id="copyright">
+        &copy;2019. All rights reserved
+    </div>
+  </footer>
+</body>
+<script src="./script/util.js"></script>
+<script src="./script/checkStatus.js"></script>
+<script src="./script/recipe.js"></script>
+<script src="./script/nutrientSearch.js"></script>
+<script src="./script/account.js"></script>
+<script src="./script/marketPlace.js"></script>
+</html>

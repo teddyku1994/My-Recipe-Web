@@ -1,0 +1,134 @@
+#signupCon,
+#signinCon {
+  z-index: 3;
+  width: 100%;
+  top: 0;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.65);
+  height: 0%;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s;
+  overflow:hidden;
+}
+
+#signupCon2
+,#signinCon2 {
+  width: 23em;
+  height: 30em;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Noto Sans TC' , sans-serif;
+  margin-top: 3%;
+}
+
+#signupTitle,
+#signinTitle {
+  margin-top: 10%;  
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  font-size: 30px;
+  background-color: rgb(255, 193, 77);
+  width: 100%;
+  text-align: center;
+  padding: 0.5em 0;
+  color: #FFF;
+  border-radius: 20px 20px 0 0;
+  cursor: pointer;
+}
+
+#signupTitle:hover,
+#signinTitle:hover {
+  background-color: orangered;
+}
+
+#signupCon3,
+#signinCon3 {
+  background-color: #FFF;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2em;
+  border-radius: 0 0 20px 20px;
+}
+
+.fillin {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 2% 0;
+}
+
+.input {
+  padding: 0.5em 1em;
+  border-radius: 10px;
+  border: 1px solid #e6e5e5;
+  font-size: 14px;
+  background-color: #97979713
+}
+
+.input:focus {
+  background-color: #FFF
+}
+
+.fillInfo {
+  margin-bottom: 10px;
+}
+
+#accountClose {
+  font-weight: bold;
+  font-size: 50px;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  cursor: pointer;
+  color: white;
+  margin-top: 1.5%;
+  margin-left: 85%
+}
+
+#accountClose:hover {
+  color: orange;
+}
+
+.email {
+  margin-top: 1em;
+}
+
+.pwInput {
+  padding: 0.75em 1em 2em;
+  border-bottom: 1.5px solid #cccccc;
+  margin-bottom: 2em;
+}
+
+#errorMsg {
+  display: none;
+  text-align: center;
+  font-family:'Noto Sans TC' , sans-serif;
+  color: rgb(216, 0, 0);
+  border: 1.25px solid rgba(253, 148, 148, 0.808);
+  background-color: rgba(255, 145, 145, 0.178);
+  width: 100%;
+  padding: 0.75em;
+  margin-bottom: 10px;
+  transition: 0.2s;
+}
+
+#loading {
+  background-color: rgba(255, 255, 255, 0.37);
+  z-index: 99;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: 0.5s;
+  visibility: hidden;
+}
+
+#loading > img {
+  position: absolute;
+  top: 40%;
+  left: 55%;
+  width: 100px;
+}

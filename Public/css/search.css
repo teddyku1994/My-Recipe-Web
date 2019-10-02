@@ -1,0 +1,316 @@
+#searchCon {
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 0;
+  background-color: rgba(68, 66, 66, 0.774);
+  overflow-x:hidden;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Noto Sans TC' , sans-serif;
+  transition: 0.3s;
+}
+
+.btn_close {
+  width: 6em;
+  text-align: end;
+  font-size: 30px;
+  margin-bottom: 10px;
+  color: orange;
+}
+
+#btn_close:hover{
+  color: white;
+}
+
+#btn_close {
+  cursor: pointer;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+}
+
+.title{
+  width: 8em;
+  font-weight: bold;
+  text-align: center;
+  font-size: 20px;
+  padding: 0.5em;
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+#searchBar,
+.smartSearch {
+  margin: 5% 0;
+  font-size: 14.5px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.searchClick{
+  cursor: pointer;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  font-size: 1.5em;
+  color: orange;
+  padding-top: 5px;
+}
+
+.searchClick:hover{
+  border-bottom: 5px solid orange;
+}
+
+.add {
+  border: none;
+  border-radius: 10px;
+  width: 80px;
+  height: 20px;
+  cursor: pointer;
+  margin-bottom: 5%;
+}
+
+.add:hover {
+  background: orange;
+  color: white;
+}
+
+#nutrientCon {
+  z-index: 2;
+  position: fixed;
+  background-color: rgba(68, 66, 66, 0.95);
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  text-align: center;
+  font-family: 'Noto Sans TC' , sans-serif;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+
+.close {
+  text-align: end;
+  width: 90%;
+  margin-top: 3%;
+}
+
+#close {
+  font-weight: bold;
+  font-size: 50px;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  cursor: pointer;
+  color: white;
+}
+
+#close:hover {
+  color: orange;
+}
+
+#title,
+#describe {
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+#title {
+  font-size: 30px;
+  color: orange;
+  margin: 2% 0 0.5%;
+}
+
+#describe {
+  margin-bottom: 1.5%;
+  font-size: 18px;
+  color: orange;
+}
+
+#nutSearchCon {
+  border: 4px solid rgb(50 ,50 ,50);
+  background-color: white;
+  width: 20rem;
+  border-radius: 15px;
+  letter-spacing: 1px;
+  display: flex;
+  align-self: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#nutSearch {
+  font-size: 20px;
+  padding: 0.75em;
+  border: none;
+  border-radius: 15px;
+  width: 80%
+}
+
+#nutSearchCon > img {
+  width: 1.7em;
+  height: 1.7em;
+  margin-right: 5%;
+  cursor: pointer;
+}
+
+.nutScene {
+  width: 20em;
+  height: 22em;
+  perspective: 40em;
+  align-self: center;
+}
+
+.nutflipCard {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+
+.nutflipCard.flipped {
+  transform: rotateY(180deg);
+}
+
+.flipFace {
+  border: 5px solid #000;
+  width: 100%;
+  height: 100%;
+  align-self: center;
+  margin-top: 1.5%;
+  background-color: #FFF;
+  border-radius: 5px;
+  display: none;
+  flex-direction: column;
+  letter-spacing: 3px;
+  align-items: center;
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.nutListTitle {
+  font-weight: bold;
+  font-size: 25px;
+  margin-top: 3.5%;
+}
+
+.nutInstruc {
+  width: 90%;
+  padding-bottom: 2%;
+  margin-bottom: 2%;
+  border-bottom: 5px solid rgb(50, 50, 50);
+  font-size: 11px;
+}
+
+#nutListUL {
+  width: 90%;
+}
+
+.nutListLI {
+  font-size: 13px;
+  padding-bottom: 3px;
+  border-bottom: 1px dashed #ccc;
+  cursor: pointer;
+}
+
+.nutListLI:hover {
+  font-size: 15px;
+  color: orange;
+}
+
+#nutCard {
+  cursor: pointer;
+  transform: rotateY( 180deg );
+}
+
+.nutTitle {
+  font-weight: bold;
+  font-size: 25px;
+  margin-top: 3.5%;
+}
+
+.describe {
+  width: 90%;
+  padding-bottom: 2%;
+  margin-bottom: 2%;
+  border-bottom: 5px solid rgb(50, 50, 50);
+  font-size: 11px;
+}
+
+#info,
+.info,
+#vit {
+  display:flex;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+#info {
+  margin: 0 0 2%;
+}
+
+.info {
+  width: 90%;
+  justify-content: space-between;
+  border-bottom: 1px dotted rgb(50 ,50 ,50);
+  font-size: 15px;
+}
+
+.calInfo {
+  font-size: 15px;
+  display:flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 90%;
+  justify-content: space-between;
+}
+
+#vit {
+  font-size: 14px;
+  width: 90%;
+  justify-content: space-between;
+  border-top: 5px solid rgb(50, 50, 50);
+  padding-top: 2%;
+  margin-top: 2%;
+}
+
+.infos {
+  display: flex;
+  width: 48%;
+  justify-content: space-between;
+  letter-spacing: 1.5px;
+}
+
+.noInfo {
+  margin-top: 25%;
+  font-family: 'Frijole', 'Noto Sans TC' , sans-serif;
+  font-size: 30px;
+  color: #000;
+}
+
+#hotKeywords {
+  display: flex;
+  flex-wrap: wrap;
+  width: 10em;
+  justify-content: center;
+  margin-top: 0.5em;
+}
+
+.keywords {
+  width: 45%;
+  margin: 3px;
+  font-size: 13px;
+  padding: 2px 1px;
+  text-decoration: none;
+  color: #000;
+  text-align: center;
+  border-radius: 15px;
+  background-color: #ccc
+}
+
+.keywords:hover {
+  color: white;
+  background-color: rgb(161, 161, 161)
+}
