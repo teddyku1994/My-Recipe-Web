@@ -184,8 +184,8 @@ const delTrace = (name) => {
   body = {
     delItem: name
   }
-  fetch("/api/1.0/marketPrice/deleteTrace", {
-    method:"POST",
+  fetch("/api/1.0/marketPrice/trace", {
+    method:"DELETE",
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${accessToken}`
@@ -232,8 +232,8 @@ const delTrace2 = () => {
   body = {
     delItem: greenTitle.innerText
   }
-  fetch("/api/1.0/marketPrice/deleteTrace", {
-    method:"POST",
+  fetch("/api/1.0/marketPrice/trace", {
+    method:"DELETE",
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${accessToken}`
