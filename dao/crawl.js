@@ -1,5 +1,5 @@
 const connection = require('../dao/promiseFunc')
-const mysql = require('../db/dbConnect')
+const db = require('../db/dbConnect')
 const util = require('../util/util')
 
 module.exports = {
@@ -51,7 +51,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let {steps, images, title, mainImg, ingredient, amount} =  body
       method = steps.map((items, idx) => [items, images[idx]])
-      mysql.con.getConnection((error, con) => {
+      db.pool.getConnection((error, con) => {
         if(error) reject("Database Query Error:",error)
         con.beginTransaction((error) => {
           if(error) {

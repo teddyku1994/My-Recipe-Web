@@ -24,8 +24,8 @@ module.exports = {
   },
   count: async (recipeId, error) => {
     let sql = 'SELECT COUNT(*) FROM likes WHERE recipe_id = ?'
-    let result = await connection.sqlQuery(sql, recipeId, error)
-    return result[0]['COUNT(*)']
+    let likesCount = await connection.sqlQuery(sql, recipeId, error)
+    return likesCount[0]['COUNT(*)']
   },
   checkExist: async(userId, recipeId, error) => {
     let sql = 'SELECT * FROM likes WHERE user_id = ? AND recipe_id = ?'

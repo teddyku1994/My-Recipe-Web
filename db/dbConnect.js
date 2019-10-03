@@ -41,6 +41,6 @@ client.on('connect', () => {
 
 module.exports = {
   core: mysql,
-  con: pool,
+  pool: pool,
   redis: client,
 }

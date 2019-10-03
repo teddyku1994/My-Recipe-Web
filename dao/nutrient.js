@@ -2,29 +2,36 @@ const connection = require('../dao/promiseFunc')
 
 module.exports = {
   nutrientSearch: async (keyword, error) => {
-    let sql = `SELECT * FROM nutrient WHERE name = '${keyword}'`
-    console.log(sql)
-    let result = await connection.sqlQuery(sql,error)
-    return {data: result}
+    let sql = `SELECT * FROM nutrient WHERE name = ?`
+    let nutrientData = await connection.sqlQuery(sql, keyword, error)
+    return {data: nutrientData}
   },
   nutrientList: async (keyword, limit, error) => {
-    let sql = `SELECT name FROM nutrient WHERE name LIKE '%${keyword}%' 
-    ORDER BY 
-    CASE
-    WHEN name LIKE '${keyword}' THEN 1
-    WHEN name LIKE '全${keyword}%' THEN 2 
-    WHEN name LIKE '${keyword}%' THEN 3
-    WHEN name LIKE '%${keyword}' THEN 4
-    ELSE '${keyword}%'
-    END 
-    LIMIT ${limit}`
-    let result = await connection.sqlQuery(sql,error)
-    let names = result.map((item) => {
-      return item.name
-    })
-    let nameObj = {}
-    nameObj.names = names
-    return {data: [nameObj]}
+    try {
+      let sql = `SELECT name FROM nutrient WHERE name LIKE 
+      ${connection.escape(`%${keyword}%`)}
+      ORDER BY 
+      CASE
+      WHEN name LIKE ${connection.escape(keyword)} THEN 1
+      WHEN name LIKE ${connection.escape(`全${keyword}%`)} THEN 2 
+      WHEN name LIKE ${connection.escape(`${keyword}%`)} THEN 3
+      WHEN name LIKE ${connection.escape(`%${keyword}`)} THEN 4
+      ELSE ${connection.escape(`${keyword}%`)}
+      END 
+      LIMIT  ${connection.escape(limit)}`
+      console.log(sql)
+      let relevantFoodList = await connection.sqlQuery(sql, null, error)
+      console.log(relevantFoodList)
+      let names = relevantFoodList.map((food) => {
+        return food.name
+      })
+      let nameObj = {}
+      nameObj.names = names
+      return {data: [nameObj]}
+    } catch (err) {
+      console.log(err)
+      return err
+    }
   }
 } 
 

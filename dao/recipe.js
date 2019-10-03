@@ -38,14 +38,14 @@ module.exports = {
     try {
       let data = {}
       let offset = page*limit
-      let sql = `SELECT * FROM recipe WHERE title LIKE '%${dishName}%' LIMIT ${limit} OFFSET ${offset}`
-      let recipes = await connection.sqlQuery(sql, null, error)
+      let sql = `SELECT * FROM recipe WHERE title LIKE ? LIMIT ? OFFSET ?`
+      let recipes = await connection.sqlQuery(sql, [`%${dishName}%`, limit, offset], error)
       if(recipes.length < 3 && page === 0) {
         await crawlRecipe.recipeCrawler(dishName)
         return crawl.renderCrawlResult(dishName, limit, 0, error)
       } else {
-        let sql2 = `SELECT COUNT(*) FROM recipe WHERE title LIKE '%${dishName}%'`
-        let total = await connection.sqlQuery(sql2, null, error)
+        let sql2 = `SELECT COUNT(*) FROM recipe WHERE title LIKE ?`
+        let total = await connection.sqlQuery(sql2, `%${dishName}%`, error)
         for(let i = 0; i<recipes.length; i++) {
           if(!recipes[i].image.includes("https://")) {
             recipes[i].image = `https://d1lpqhjzd6rmjw.cloudfront.net${result[i].image}`
@@ -63,14 +63,15 @@ module.exports = {
   },
   listByIngredient: async (ingredient, limit, page, error) => {
     try {
+      
       let data = {}
       let offset = page*limit
       let name = ''
       if(!ingredient.includes(',')) {
-        name += `name LIKE '%${ingredient}%'`
+        name += `name LIKE ${connection.escape(`%${ingredient}%`)}`
       } else {
         let ingredientArr = ingredient.split(',')
-        let args = ingredientArr.map((item) => `name LIKE '%${item}%'`).join(` AND `)
+        let args = ingredientArr.map((ingredient) => `name LIKE ${connection.escape(`%${ingredient}%`)}`).join(` AND `)
         name += args
       }
       let sql = `SELECT recipe_id FROM ingredient WHERE ${name}`
@@ -149,9 +150,8 @@ module.exports = {
   },
   deleteKeywords: async(period) => {
     let error = (error) => console.log(error)
-    let sql = `DELETE FROM searchRecords WHERE createAt < (NOW() - INTERVAL ${period})`
-    console.log(sql)
-    let result = await connection.sqlQuery(sql, error)
+    let sql = 'DELETE FROM searchRecords WHERE createAt < (NOW() - INTERVAL ?)'
+    let result = await connection.sqlQuery(sql, period, error)
     return result
   }
 }

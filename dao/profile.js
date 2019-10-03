@@ -1,6 +1,6 @@
 const connection = require('./promiseFunc')
 const util = require('../util/util')
-const mysql = require('../db/dbConnect')
+const db = require('../db/dbConnect')
 const recipe = require('./recipe')
 
 module.exports = {
@@ -57,7 +57,7 @@ module.exports = {
       for(let i = 0; i < images.length; i++) {
         method[i].push(images[i].location.replace('https://myrecipsebucket.s3.amazonaws.com', ''))
       }
-      mysql.con.getConnection((error, con) => {
+      db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
             reject("Database Query Error: "+error);
@@ -121,7 +121,7 @@ module.exports = {
         method[i].push(image[i])
       }
       console.log(method)
-      mysql.con.getConnection((error, con) => {
+      db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
             reject("Database Query Error: "+error);

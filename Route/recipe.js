@@ -63,7 +63,7 @@ router.get('/recipe', async (req, res) => {
 
 router.get('/recipe/hots', async (req, res) => {
   try {
-    let error = error => res.json(error)
+    let error = error => console.log(error)
     let cacheResponse = await cache.getSetCache('hots', error)
     if(cacheResponse) return res.json(cacheResponse)
     let hotRecipes = await recipe.listHots(16, error)
@@ -76,15 +76,11 @@ router.get('/recipe/hots', async (req, res) => {
   }
 })
 
-router.post('/recipe/like', async (req, res) => {
-  if(req.header('Content-Type') !== "application/json") {
-    return res.json(util.error('Header is not in application/json'))
-  }
+router.post('/recipe/like', verification.verifyContentType, async (req, res) => {
   let body = req.body
-  let error = error => res.json(util.error(error))
-
-  let result = await likes.count(body.recipeId, error)
-  return res.json(result)
+  let error = error => console.log(error)
+  let likesCount = await likes.count(body.recipeId, error)
+  return res.json(likesCount)
 })
 
 module.exports = router

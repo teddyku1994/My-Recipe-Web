@@ -5,27 +5,24 @@ module.exports = {
     sqlQuery: (sql,params,cb) => {
         if(params) {
             return new Promise((resolve,reject) => {
-                mysql.con.query(sql,params,(err, result) => {
+                mysql.pool.query(sql,params,(err, result) => {
                 if (err) reject(cb(err))
                 else resolve(result)
                 })
             });  
         } else {
             return new Promise((resolve,reject) => {
-                mysql.con.query(sql, (err, result) => {
+                mysql.pool.query(sql, (err, result) => {
                 if (err) reject(cb(err))
                 else resolve(result)
                 })
             });
         }
-    },  
-    sqlQuery2: (sql,arr,cb) => {
-        return new Promise((resolve,reject) => {
-            mysql.con.query(sql, [arr], (err, result) => {
-            if (err) reject(cb(err))
-            else resolve(result)
-            })
-        })
+    },
+    escape: (variable) => {
+        variable = mysql.pool.escape(variable)
+        console.log(variable)
+        return variable
     },
     html: (link, time) => {
         return new Promise((resolve,reject) => {
