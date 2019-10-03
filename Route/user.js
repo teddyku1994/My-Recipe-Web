@@ -84,7 +84,7 @@ router.post('/user/recipe/upload', file.uploadRecipe, async (req,res) => {
 })
 
 //! Still require refatoring - Add delete S3 file
-router.post('/user/recipe/update', file.uploadRecipe, cache.deleteCahe, async (req,res) => {
+router.post('/user/recipe/update', file.uploadRecipe, cache.deleteCache, async (req,res) => {
   if(!req.headers.authorization) {
     return res.redirect('/index.html')
   }
@@ -119,10 +119,9 @@ router.post('/user/recipe', verification.verifyContentType, verification.verifyT
   }
 })
 
-router.delete('/user/recipe', verification.verifyContentType, verification.verifyToken, async (req,res) => {
+router.delete('/user/recipe', verification.verifyContentType, verification.verifyToken, cache.deleteCache, async (req,res) => {
   let body = req.body
   let error = error => console.log(error)
-  cache.deleteCahe2('recipePage', body.recipeId)
   let result = await profile.deleteRecipe(body, req.userID, error)
   res.json(result)
 })

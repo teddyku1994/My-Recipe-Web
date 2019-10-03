@@ -63,7 +63,6 @@ module.exports = {
   },
   listByIngredient: async (ingredient, limit, page, error) => {
     try {
-      
       let data = {}
       let offset = page*limit
       let name = ''

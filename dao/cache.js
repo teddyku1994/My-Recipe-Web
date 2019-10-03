@@ -31,20 +31,14 @@ module.exports={
       return cb(err)
     }
   },
-  deleteCahe:(req, res, next) => {
-    let error = (err) => console.log(err)
-    let id = req.body.recipeId
-    db.redis.hdel('recipePage', id, (err, reply) => {
-      if(err) error(err)
-      console.log("deleted:",reply)
-    })
-    next()
-  },
-  deleteCahe2:(hash, id) => {
-    let error = (err) => console.log(err)
-    db.redis.hdel(hash, id, (err, reply) => {
-      if(err) error(err)
-      console.log("deleted:",reply)
-    })
+  deleteCache: async (req, res, next) => {
+    try {
+      let id = req.body.recipeId
+      await db.redis.hdelAsync('recipePage', id)
+      next()
+    } catch (err) {
+      console.log(err)
+      return res.json(new Error('Invalid Token'))
+    }
   }
 }
