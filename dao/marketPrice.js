@@ -1,7 +1,70 @@
 const db = require('../db/dbConnect')
 const util = require('../util/util')
+const crawl = require('../util/crawl')
+const cache = require('../dao/cache')
+
+const traceListSingle = async (userId, keyword) => {
+  try {
+    let userList = await db.redis.hgetallAsync(userId)
+    if(!userList) return util.error('No Result')
+    let keylist = Object.keys(userList)
+    let exist = 0
+    keylist.indexOf(keyword) === -1 ? null : exist += 1
+    return exist
+  } catch(err) {
+    console.log(err)
+    return util.error('Invalid Token')
+  }
+}
+
+const priceExist = async (userId, response) => {
+  try {
+    let responseCopy = response
+    let exist = await traceListSingle(userId, responseCopy.data[0].title)
+    responseCopy.data[0]['exist'] = exist
+    return responseCopy
+  } catch (err) {
+    console.log(err)
+    return util.error('Invalid Token')
+  }
+}
 
 module.exports = {
+  getGreenPrice: async (userId, body, error) => {
+    try {
+      if(body.keywords) {
+        let cacheResponse = await cache.getHashCache("greens", body.keywords, error)
+        if(cacheResponse) {
+          let greenPriceData = await priceExist(userId, cacheResponse)
+          return greenPriceData
+        }
+        let greenPrice = await crawl.greenPriceCralwer(body.keywords)
+        if(!greenPrice) return res.json(util.error('No Result'))
+        greenPriceData = await priceExist(userId, greenPrice)
+        await cache.createHashCache("greens", body.keywords, JSON.stringify(greenPrice))
+        await cache.createHashCache("greens", greenPrice.data[0].title, JSON.stringify(greenPrice))
+        await cache.createHashCache("greensForUpdate", greenPrice.data[0].title,greenPrice.data[0].cacheLink)
+        return greenPriceData
+      } else if(body.links) {
+        let cacheResponse = await cache.getHashCache("greens", body.links, error)
+        if(cacheResponse) {
+          let greenPriceData = await priceExist(userId, cacheResponse)
+          return greenPriceData
+        }
+        let greenPrice = await crawl.greenPriceCrawler2(body.links)
+        if(!greenPrice) return res.json(util.error('No Result'))
+        greenPriceData = await priceExist(userId, greenPrice)
+        await cache.createHashCache("greens", greenPrice.data[0].title, JSON.stringify(greenPrice))
+        await cache.createHashCache("greensForUpdate", greenPrice.data[0].title,greenPrice.data[0].cacheLink)
+        return greenPriceData
+      } else {
+        return util.error('Invalid Token')
+      }
+    } catch (err) {
+      console.log(err)
+      return util.error('Invalid Token')
+    }
+  },
   traceGreenPrice: async (userId, args) => {
     try {
       let greenName = Object.keys(args)[0]
@@ -33,19 +96,6 @@ module.exports = {
       let updatedUserList = {data:priceData}
       await db.redis.hsetAsync('userList', userId, JSON.stringify(updatedUserList))
       return updatedUserList
-    } catch(err) {
-      console.log(err)
-      return util.error('Invalid Token')
-    }
-  },
-  traceListSingle: async (userId, keyword) => {
-    try {
-      let userList = await db.redis.hgetallAsync(userId)
-      if(!userList) return util.error('No Result')
-      let keylist = Object.keys(userList)
-      let exist = 0
-      keylist.indexOf(keyword) === -1 ? null : exist += 1
-      return exist
     } catch(err) {
       console.log(err)
       return util.error('Invalid Token')
