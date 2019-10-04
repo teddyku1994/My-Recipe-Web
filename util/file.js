@@ -47,60 +47,23 @@ const uploadProfileImg = multer({
     checkFileType( file, cb );
   }
 })
-.fields([{name: 'profilePic', maxCount: 1}]);
-
-
-// const deleteS3Obj = (filename) => {
-//   let params = {
-//     Bucket: 'myrecipsebucket',
-//     Key: filename
-//   };
-//   s3.deleteObject(params, (err, data) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log('ok')
-//     }
-//   });
-// }
-
-
-// const storage = multer.diskStorage({
-//   destination: './public/uploads/',
-//   filename: function(req, file, cb) {
-//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//   }
-// });
-  
-// // Init Upload Multer
-// const upload = multer({
-//   storage : storage,
-//   fileFilter: function(req, file, cb) {
-//     checkFileType(file, cb);
-//   }
-// })
-// .fields([
-//   {name: 'mainImg', maxCount: 1},
-//   {name:'images', maxCount:20},
-//   {name: 'profilePic', maxCount: 1}
-// ])
+.fields([{name: 'profilePic', maxCount: 1}])
 
 //Check File Type
 function checkFileType(file, cb){
   // Check file Type
   const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+  const mimetype = filetypes.test(file.mimetype)
 
   if(mimetype && extname){
-    return cb(null, true);
+    return cb(null, true)
   } else {
-    cb('Error: Images Only');
+    cb('Error: Images Only')
   }
 }
 
 module.exports = {
   uploadRecipe: uploadRecipe,
   uploadProfileImg: uploadProfileImg
-  // deleteS3Obj: deleteS3Obj
 }

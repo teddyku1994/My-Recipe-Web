@@ -47,7 +47,7 @@ router.delete('/marketPrice/trace', verification.verifyContentType, verification
   }
 })
 
-router.get('/marketPrice/tracelist', verification.verifyContentType, verification.verifyToken, async (req, res) => {
+router.get('/marketPrice/tracelist', verification.verifyToken, async (req, res) => {
   try {
     let {userId} = req
     let error = error => console.log(error)

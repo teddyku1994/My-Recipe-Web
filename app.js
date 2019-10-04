@@ -17,11 +17,10 @@ app.use(bodyPasrser.json())
 app.use('/', express.static(path.join(__dirname, 'Public')))
 
 //Schedule Update
-schedule.deleteKeywords("7 DAY")
+schedule.deleteKeywords('7 DAY')
 schedule.greenPriceUpdate()
 
-// app.use("/api/", function(req, res, next){
-// 	//console.log(req.originalUrl);
+//app.use("/api/", function(req, res, next){
 // 	res.set("Access-Control-Allow-Origin", "*");
 // 	res.set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
 // 	res.set("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS");
@@ -35,6 +34,6 @@ app.use(`/api/${cst.api_ver}/`, nutrientRouter, recipeRouter, userRouter, market
 
 app.get('/', (req, res) => {
   res.redirect("/index.html")
-});
+})
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`))

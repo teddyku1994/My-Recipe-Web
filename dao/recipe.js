@@ -147,10 +147,10 @@ module.exports = {
     }
     return data
   },
-  deleteKeywords: async(period) => {
+  deleteHotKeywords: async(period) => {
     let error = (error) => console.log(error)
-    let sql = 'DELETE FROM searchRecords WHERE createAt < (NOW() - INTERVAL ?)'
-    let result = await connection.sqlQuery(sql, period, error)
+    let sql = `DELETE FROM searchRecords WHERE createAt < (NOW() - INTERVAL ${period})`
+    let result = await connection.sqlQuery(sql, null, error)
     return result
   }
 }

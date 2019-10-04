@@ -67,6 +67,7 @@ const priceList = () => {
     return (result.json())
   }).then((result) => {
     if(result){
+      console.log(result)
       return priceListRender(result)
     }
     console.log(result)
@@ -141,7 +142,7 @@ const priceListRender = (response) => {
         }}, priceCon)
         : createElement("div", {atrs: {
           className: "priceDiff traceInfo",
-          innerText: oldPrice[1]-curPrice[1]
+          innerText: curPrice[1] - oldPrice[1]
         }}, priceCon)
       } else {
         createElement("div", {atrs: {
