@@ -254,25 +254,3 @@ module.exports = {
     return({status:"Success"})
   }
 }
-
-// {
-  // "Version": "2012-10-17",
-  // "Statement": [
-  //     {
-  //         "Sid": "AddCannedAcl",
-  //         "Effect": "Allow",
-  //         "Principal": {
-  //             "AWS": "arn:aws:iam::430369962406:user/appworks"
-  //         },
-  //         "Action": [
-  //             "s3:PutObject",
-  //             "s3:PutObjectAcl",
-  //             "s3:DeleteObject"
-  //         ],
-  //         "Resource": "arn:aws:s3:::myrecipsebucket/*",
-  //         "Condition": {
-  //             "StringEquals": {
-  //                 "s3:x-amz-acl": "public-read"
-  //             }
-  //         }
-  //     }
