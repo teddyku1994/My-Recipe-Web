@@ -460,6 +460,9 @@ const editBasic = () => {
     userName.style.backgroundColor = "#97979713"
     userName.style.border = "1px solid #ccc"
   } else {
+    body = {
+      search: "basicInfo"
+    }
     editSubmit.style.visibility = "hidden"
     file.style.visibility = "hidden"
     userName.readOnly = true
@@ -510,7 +513,7 @@ const editPw = () => {
   }
 }
 
-const editSubmit = () => {
+const editSubmit = async () => {
   let editSubmit = getId("editSubmit")
   let file = getId("file")
   let userName = getId("userName")
@@ -537,8 +540,8 @@ const editSubmit = () => {
 
   loading.style.visibility = "visible"
 
-  fetch("/api/1.0/user/profile/updateFile", {
-    method:"POST",
+  fetch("/api/1.0/user/profile", {
+    method:"PUT",
     headers: {
       "Accept": "application/json",
       "Authorization": `Bearer ${accessToken}`
@@ -550,7 +553,7 @@ const editSubmit = () => {
     if(result.status === "Success") {
       editSubmit.innerText = "Submit"
       feedback("基本資料更改成功", "success")
-      return editBasic()
+      editBasic()
     } else {
       editSubmit.innerText = "Submit"
       feedback("基本資料更改失敗", "error")
@@ -1466,8 +1469,8 @@ const updateSubmit = () => {
   
   loading.style.visibility = "visible"
 
-  fetch("/api/1.0/user/recipe/update", {
-    method:"POST",
+  fetch("/api/1.0/user/recipe/upload", {
+    method:"PUT",
     headers: {
       "Accept": "application/json",
       "Authorization": `Bearer ${accessToken}`
@@ -1476,6 +1479,7 @@ const updateSubmit = () => {
   }).then((result) => {
     return (result.json())
   }).then((result) => {
+    console.log(result)
     loading.style.visibility = "hidden"
     if(result.status === "Success") return renderMemberRecipe()
     updateSubmit.innerText = "SUBMIT"

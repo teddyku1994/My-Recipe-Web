@@ -31,7 +31,6 @@ module.exports = {
     let data = {
       data:dishInfo
     }
-    console.log(data)
     return data
   },
   listByDishName: async (dishName, limit, page, error) => {
@@ -80,9 +79,9 @@ module.exports = {
         return crawl.renderCrawlResult2(ingredient, limit, 0, error)
       }
       let recipeIdsArr = recipeIds.map(item => item.recipe_id)
-      let sql2 = `SELECT * FROM recipe WHERE id IN (?) LIMIT ? OFFSET ?`
+      let sql2 = 'SELECT * FROM recipe WHERE id IN (?) LIMIT ? OFFSET ?'
       let recipesInfo = await connection.sqlQuery(sql2, [recipeIdsArr, limit, offset], error)
-      let sql3 = `SELECT COUNT(*) FROM recipe WHERE id IN (?)`
+      let sql3 = 'SELECT COUNT(*) FROM recipe WHERE id IN (?)'
       let total = await connection.sqlQuery(sql3, [recipeIdsArr], error)
       for(let i = 0; i<recipesInfo.length; i++) {
         if(!recipesInfo[i].image.includes("https://")) {
@@ -99,7 +98,7 @@ module.exports = {
     }
   },
   listHots: async (limit, error) => {
-    let sql = `SELECT * FROM recipe ORDER BY likes DESC LIMIT ?`
+    let sql = 'SELECT * FROM recipe ORDER BY likes DESC LIMIT ?'
     let hotRecipes = await connection.sqlQuery(sql, limit, error)
     for(let i = 0; i<hotRecipes.length; i++) {
       if(!hotRecipes[i].image.includes("https://")) {
@@ -130,7 +129,6 @@ module.exports = {
       else {
         searchItem.map((item) => searchArr.push([item, category]))
       }
-      console.log(searchArr)
       let sql = `INSERT INTO searchRecords (searchItem, category) VALUES ?`
       let result = await connection.sqlQuery(sql, [searchArr], error)
       return result
@@ -141,7 +139,6 @@ module.exports = {
   listHotKeywords: async (limit, error) => {
     let sql = `SELECT searchItem, category, COUNT(*) FROM searchRecords GROUP BY searchItem, category ORDER BY COUNT(*) DESC LIMIT ?`
     let hotKeywords = await connection.sqlQuery(sql, limit, error)
-    console.log(hotKeywords)
     let data = {
       data: hotKeywords
     }

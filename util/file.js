@@ -10,20 +10,29 @@ const s3 = new aws.S3({
   bucket: 'myrecipsebucket'
  });
 
- const uploadRecipe = multer({
+const deleteS3File = async (filePath) => {
+  try {
+    let params = {Bucket: 'myrecipsebucket', Key: filePath}
+    await s3.deleteObject(params).promise()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const uploadRecipe = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'myrecipsebucket',
     acl: 'public-read',
     metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
+      cb(null, {fieldName: file.fieldname})
     },
     key: function (req, file, cb) {
-      cb(null, `recipes/${req.body.recipeId}/${Date.now()+file.originalname}`)
+      cb(null, `recipes/${req.userId}/${Date.now()+file.originalname}`)
     }
   }),
   fileFilter: function( req, file, cb ){
-    checkFileType( file, cb );
+    checkFileType( file, cb )
   }
 })
 .fields([
@@ -37,14 +46,14 @@ const uploadProfileImg = multer({
     bucket: 'myrecipsebucket',
     acl: "public-read",
     metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
+      cb(null, {fieldName: file.fieldname})
     },
     key: function (req, file, cb) {
       cb(null, `profile/${req.body.id}/${Date.now()+file.originalname}`)
     }
   }),
   fileFilter: function( req, file, cb ){
-    checkFileType( file, cb );
+    checkFileType( file, cb )
   }
 })
 .fields([{name: 'profilePic', maxCount: 1}])
@@ -52,7 +61,7 @@ const uploadProfileImg = multer({
 //Check File Type
 function checkFileType(file, cb){
   // Check file Type
-  const filetypes = /jpeg|jpg|png|gif/;
+  const filetypes = /jpeg|jpg|png|gif/
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = filetypes.test(file.mimetype)
 
@@ -65,5 +74,6 @@ function checkFileType(file, cb){
 
 module.exports = {
   uploadRecipe: uploadRecipe,
-  uploadProfileImg: uploadProfileImg
+  uploadProfileImg: uploadProfileImg,
+  deleteS3File: deleteS3File
 }

@@ -5,6 +5,7 @@ const verification = require('../util/verification')
 const util = require('../util/util')
 
 module.exports = {
+  //! Add Transition
   signup: async (body, error) => {
     try {
       if(!body.name||!body.email||!body.pw||!body.confirmPw) {

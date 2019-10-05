@@ -1,5 +1,4 @@
 const express = require('express')
-const router = express.Router()
 const user = require('../dao/user')
 const profile = require('../dao/profile')
 const favorite = require('../dao/favorite')
@@ -9,10 +8,11 @@ const util = require('../util/util')
 const file = require('../util/file')
 const verification = require('../util/verification')
 
+const router = express.Router()
 router.use(express.json())
 
 router.post('/user/verify', verification.verifyToken, async (req, res) => {
-  return res.json({status:"Valid Token"})
+  res.json({status:"Valid Token"})
 })
 
 router.post('/user/signup', verification.verifyContentType, async (req,res) => {
@@ -26,7 +26,7 @@ router.post('/user/signin', verification.verifyContentType, async (req, res) => 
   let body = req.body
   let error = error => console.log(error)
   let token = await user.signin(body, error)
-  return res.json(token)
+  res.json(token)
 })
 
 router.post('/user/profile', verification.verifyContentType, verification.verifyToken, async (req,res) => {
@@ -34,48 +34,35 @@ router.post('/user/profile', verification.verifyContentType, verification.verify
   let body = req.body
   if(body.search === 'basicInfo') {
     let result = await profile.getInfo(req.userId, error)
-    return res.json(result)
+    res.json(result)
   } else if(body.search === 'favInfo') {
     let result = await favorite.list(req.userId, 4, body.page, error)
-    return res.json(result)
-  }  else if(body.search === 'updatePw') {
+    res.json(result)
+  } else if(body.search === 'updatePw') {
     let result = await user.changePw(body, req.userId, error)
-    return res.json(result)
+    res.json(result)
   } else {
     res.json(util.error('Invalid Token'))
   } 
 })
 
-//! Still require refatoring - Add delete S3 file
-router.post('/user/profile/updateFile', verification.verifyToken, file.uploadProfileImg, async (req, res) => {
-  let error = error => res.json(error)
+router.put('/user/profile', verification.verifyToken, file.uploadProfileImg, async (req, res) => {
+  let error = error => console.log(error)
   let body = req.body
   let info = []
   let dp
   req.files.profilePic ? dp = req.files.profilePic[0].location.replace('https://myrecipsebucket.s3.amazonaws.com', '') : dp = null
   info.push(body.name)
   info.push(dp)
-  let result = await profile.update(verify.userId, info, error)
-  // if(body.dp) {
-  //   let src = body.dp.split('/').slice(-1)[0]
-  //   file.deleteS3Obj(`profile/21/${src}`, error)
-  // }
-  return res.json(result)
+  let result = await profile.update(req.userId, info, error)
+  res.json(result)
 })
 
-//! Still require refatoring - Add delete S3 file
-router.post('/user/recipe/upload', file.uploadRecipe, async (req,res) => {
-  if(!req.headers.authorization) {
-    return res.redirect('/index.html')
-  }
+router.post('/user/recipe/upload', verification.verifyToken, file.uploadRecipe, async (req,res) => {
   try {
     let body = req.body
     let file = req.files
-    let token = req.headers.authorization.replace('Bearer ', '')
-    let verify = jwt.verifyToken(token)
-    if (verify.error) return res.redirect('/index.html')
-    let userId = verify.userId
-    console.log(userId)
+    let userId = req.userId
     let result = await profile.createRecipe(body, file, userId)
     res.json(result)
   } catch (err) {
@@ -84,21 +71,17 @@ router.post('/user/recipe/upload', file.uploadRecipe, async (req,res) => {
 })
 
 //! Still require refatoring - Add delete S3 file
-router.post('/user/recipe/update', file.uploadRecipe, cache.deleteCache, async (req,res) => {
-  if(!req.headers.authorization) {
-    return res.redirect('/index.html')
-  }
+router.put('/user/recipe/upload', verification.verifyToken, file.uploadRecipe, cache.deleteCache, async (req,res) => {
   try {
     let body = req.body
     let file = req.files
-    let token = req.headers.authorization.replace('Bearer ', '')
-    let verify = jwt.verifyToken(token)
-    if (verify.error) return res.redirect('/index.html')
-    let userId = verify.userId
-    let result = await profile.updateRecipe(body, file, userId)
-    res.json(result)
+    let userId = req.userId
+    let error = error => console.log(error)
+    await profile.delPrevRecipeData(body, file, userId, error)
+    let resultStatus = await profile.updateRecipe(body, file, userId)
+    res.json(resultStatus)
   } catch (err) {
-    res.json(err)
+    res.json(util.error('Invalid Method'))
   }
 })
 
@@ -135,17 +118,17 @@ router.post('/user/favorite', verification.verifyContentType, verification.verif
     if(status === "save") {
       let result = await favorite.insert(req.userId, body.recipeId, error)
       if(!result.insertId) return res.json(util.error('Insert Fail'))
-      return res.json({status: "Success"})
+      res.json({status: "Success"})
     } else if(status === "unsave") {
       let result = await favorite.delete(req.userId, body.recipeId, error)
       if(!result.affectedRows) return res.json(util.error('Delete Fail'))
-      return res.json({status: "Success"})
+      res.json({status: "Success"})
     } else if(status === "check") {
       let result = await favorite.checkExist(req.userId, body.recipeId, error)
-      return res.json(result)
+      res.json(result)
     } else if(status === "list") {
       let result = await favorite.list(req.userId, error)
-      return res.json(result)
+      res.json(result)
     } else {
       res.json(util.error('Invalid Token'))
     }
@@ -161,14 +144,14 @@ router.post('/user/like', verification.verifyContentType, verification.verifyTok
   if(status === "like") {
     let result = await likes.insert(req.userId, body.recipeId, error)
     if(!result.insertId) return res.json(util.error('Insert Fail'))
-    return res.json({status: "Success"})
+    res.json({status: "Success"})
   } else if(status === "unlike") {
     let result = await likes.delete(req.userId, body.recipeId, error)
     if(!result.affectedRows) return res.json(util.error('Delete Fail'))
-    return res.json({status: "Success"})
+    res.json({status: "Success"})
   } else if(status === "check") {
     let result = await likes.checkExist(req.userId, body.recipeId, error)
-    return res.json(result)
+    res.json(result)
   } else {
     res.json(util.error('Invalid Token'))
   }
