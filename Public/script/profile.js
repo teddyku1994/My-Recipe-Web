@@ -1,16 +1,25 @@
-const renderProfile = async () => {
+//* Member Basic Information
+const memberInfo = () => {
+  profileRecipe.style.backgroundColor = "rgb(255, 194, 80)"
+  profileFav.style.backgroundColor = "rgb(255, 194, 80)"
+  profileInfo.style.backgroundColor = "#ffffff60"
+  
   let con2 = getId("con2")
+  while (con2.hasChildNodes()) {
+    con2.removeChild(con2.lastChild)
+  }
+
+  renderProfile() 
+}
+
+const renderProfile = async () => {
   let accessToken = localStorage.getItem("accessToken")
+  let con2 = getId("con2")
   let body = {
     search: "basicInfo"
   }
 
-  let result = await fetching("/user/profile", "POST", {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${accessToken}`
-  }, JSON.stringify(body))
-  console.log(result)
-  if(result.error) return window.location = "/index.html"
+  if(!accessToken) return window.location = "/index.html"
 
   let render = (response) => {
     let dp = getId('dp')
@@ -21,7 +30,7 @@ const renderProfile = async () => {
     createElement("div", { atrs: {
       className: "con2_1"
     }}, con2)
-    let con2_1 = document.getElementsByClassName('con2_1')[0]
+    let con2_1 = getClass('con2_1')[0]
     createElement("div", { atrs: {
       className: "basicInfo",
       innerText: "基本資料"
@@ -62,7 +71,7 @@ const renderProfile = async () => {
     createElement("div", { atrs: {
       className: "con2_1"
       }}, con2)
-      let con2_2 = document.getElementsByClassName("con2_1")[1]
+      let con2_2 = getClass("con2_1")[1]
     createElement("div", { atrs: {
       className: "changePw",
       innerText: "密碼管理"
@@ -110,7 +119,7 @@ const renderProfile = async () => {
         click:() => logout()
       }
     }, con2)
-    let information = document.getElementsByClassName("information")
+    let information = getClass("information")
     let subtitle1 = ["名稱:", "ID:", "Email", "大頭貼:"]
     let details1 = ["userName", "userId", "userEmail"]
     let subtitle2 = ["舊密碼", "新密碼", "確認密碼"]
@@ -150,10 +159,21 @@ const renderProfile = async () => {
     }}, information[1])
   }
 
-  render(result.data[0])
+  let profileData = await fetching("/user/profile", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(profileData.error) {
+    localStorage.clear()
+    window.location = "/index.html"
+    return 
+  }
+
+  render(profileData.data[0])
 }
 
-const editBasic = () => {
+const editBasic = async () => {
   let editSubmit = getId("editSubmit")
   let file = getId("file")
   let userName = getId("userName")
@@ -177,28 +197,74 @@ const editBasic = () => {
     userName.readOnly = true
     userName.style.backgroundColor = "#fff"
     userName.style.border = "none"
+
+    let newProfileData = await fetching("/user/profile", "POST", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`
+    }, JSON.stringify(body))
+
+    loading.style.visibility = "hidden"
     
-    fetch("/api/1.0/user/profile", {
-      method:"POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(body)
-    }).then((result) => {
-      return (result.json())
-    }).then((result) => {
-      userName.value = result.data[0].name
-      localStorage.setItem("dp", result.data[0].image)
-      dp.src = result.data[0].image
-      profileDp.src = result.data[0].image
-      loading.style.visibility = "hidden"
-    }).catch((error) => {
-      loading.style.visibility = "hidden"
-      console.log(error)
-      // alert("系統錯誤")
-    })
+    if(!newProfileData.error) {
+      userName.value = newProfileData.data[0].name
+      if(newProfileData.data[0].image) {
+        localStorage.setItem("dp", newProfileData.data[0].image)
+        dp.src = newProfileData.data[0].image
+        profileDp.src = newProfileData.data[0].image
+      }
+    } else {
+      console.log(newProfileData)
+    }
   }
+}
+
+const editSubmit = async () => {
+  try {
+    let editSubmit = getId("editSubmit")
+    let file = getId("file")
+    let userName = getId("userName")
+    let userId = getId("userId")
+    let dp = getId("dp")
+    let loading = getId("loading")
+    let accessToken = localStorage.getItem("accessToken")
+    let fd = new FormData();
+    
+    editSubmit.innerText = ""
+  
+    fd.append("name", userName.value)
+    fd.append("id", userId.value)
+    fd.append("dp", dp.src)
+    if(file.files[0]) {
+      let imagetype = ["jpg", "jpeg", "png", "gif"]
+      let type = file.files[0].type.split("/")[1].toLowerCase()
+      if(imagetype.indexOf(type) === -1) {
+        editSubmit.innerText = "Submit"
+        return feedback("請使用 jpg/jpeg/png/gif", "error") 
+      }
+      fd.append("profilePic", file.files[0])
+    }
+  
+    loading.style.visibility = "visible"
+  
+    let profileUpdate = await fetching("/user/profile", "PUT", {
+      "Accept": "application/json",
+      "Authorization": `Bearer ${accessToken}`
+    }, fd)
+  
+    loading.style.visibility = "hidden"
+  
+    if(profileUpdate.status === "Success") {
+      editSubmit.innerText = "Submit"
+      feedback("基本資料更改成功", "success")
+      editBasic()
+    } else {
+      editSubmit.innerText = "Submit"
+      feedback("基本資料更改失敗", "error")
+    }
+  } catch (err) {
+    loading.style.visibility = "hidden"
+    console.log(err)
+  } 
 }
 
 const editPw = () => {
@@ -222,60 +288,7 @@ const editPw = () => {
   }
 }
 
-const editSubmit = async () => {
-  let editSubmit = getId("editSubmit")
-  let file = getId("file")
-  let userName = getId("userName")
-  let userId = getId("userId")
-  let dp = getId("dp")
-  let loading = getId("loading")
-  let accessToken = localStorage.getItem("accessToken")
-  let fd = new FormData();
-  
-  editSubmit.innerText = ""
-
-  fd.append("name", userName.value)
-  fd.append("id", userId.value)
-  fd.append("dp", dp.src)
-  if(file.files[0]) {
-    let imagetype = ["jpg", "jpeg", "png", "gif"]
-    let type = file.files[0].type.split("/")[1].toLowerCase()
-    if(imagetype.indexOf(type) === -1) {
-      editSubmit.innerText = "Submit"
-      return feedback("請使用 jpg/jpeg/png/gif", "error") 
-    }
-    fd.append("profilePic", file.files[0])
-  }
-
-  loading.style.visibility = "visible"
-
-  fetch("/api/1.0/user/profile", {
-    method:"PUT",
-    headers: {
-      "Accept": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: fd
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(result.status === "Success") {
-      editSubmit.innerText = "Submit"
-      feedback("基本資料更改成功", "success")
-      editBasic()
-    } else {
-      editSubmit.innerText = "Submit"
-      feedback("基本資料更改失敗", "error")
-      loading.style.visibility = "hidden"
-    }
-  }).catch((error) => {
-    loading.style.visibility = "hidden"
-    console.log(error)
-    // alert("系統錯誤")
-  })
-}
-
-const pwSubmit = () => {
+const pwSubmit = async () => {
   let oldPw = getId("oldPw").value
   let newPw = getId("newPw").value
   let confirmNewPw = getId("confirmNewPw").value
@@ -288,70 +301,56 @@ const pwSubmit = () => {
   
   loading.style.visibility = "visible"
 
-  body = {
+  let body = {
     search: "updatePw",
     oldPw: oldPw,
     newPw: newPw
   }
 
-  fetch("/api/1.0/user/profile", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    loading.style.visibility = "hidden"
-    if(result.status === "Success") {
-      feedback("密碼更改成功", "success")
-      return editPw()
-    }
-    if(result.error === "Invalid Password") return feedback("舊密碼錯誤", "error")
-    
-  }).catch((error) => {
-    loading.style.visibility = "hidden"
-    console.log(error)
-    // alert("系統錯誤")
-  })
+  let pwUpdate = await fetching("/user/profile", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
 
+  loading.style.visibility = "hidden"
 
+  if(pwUpdate.status === "Success") {
+    feedback("密碼更改成功", "success")
+    editPw()
+  } else if(pwUpdate.error === "Invalid Password") {
+    return feedback("舊密碼錯誤", "error")
+  } else {
+    console.log(pwUpdate)
+  }
 } 
 
-const renderMemberFav = (page) => {
+//* Member Favorite
+const memberFav = () => {
+  profileRecipe.style.backgroundColor = "rgb(255, 194, 80)"
+  profileInfo.style.backgroundColor = "rgb(255, 194, 80)"
+  profileFav.style.backgroundColor = "#ffffff60"
+
+  renderMemberFav(0)
+
+}
+
+const renderMemberFav = async (page) => {
   let con2 = getId("con2")
   while (con2.hasChildNodes()) {
     con2.removeChild(con2.lastChild)
   }
+
   let accessToken = localStorage.getItem("accessToken")
-  body = {
+  let body = {
     search: "favInfo",
     page: page
   }
-
-  fetch("/api/1.0/user/profile", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    return render(result)
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
 
   let render = (response) => {
     createElement("div", { atrs: {
       className: "con2_1"
     }}, con2)
-    let con2_1 = document.getElementsByClassName("con2_1")[0]
+    let con2_1 = getClass("con2_1")[0]
     createElement("div", { atrs: {
       innerText: "收藏清單"
     }}, con2_1)
@@ -383,12 +382,12 @@ const renderMemberFav = (page) => {
           id: response.data[i].recipe_id,
           className:"favCon2"
         }}, favCon)
-        let favCon2 = document.getElementsByClassName("favCon2")
+        let favCon2 = getClass("favCon2")
         createElement("a", { atrs: {
           className:"favLink",
           href: `/recipe.html?id=${response.data[i].recipe_id}`
         }}, favCon2[i])
-        let favLink = document.getElementsByClassName("favLink")
+        let favLink = getClass("favLink")
         createElement("img", { atrs: {
           className:"favImg",
           src: response.data[i].image,
@@ -410,50 +409,177 @@ const renderMemberFav = (page) => {
       }
     }
   }
+
+  let userFavList = await fetching("/user/profile", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(!userFavList.error) {
+    render(userFavList) 
+  } else {
+    console.log(userFavList)
+  }
 }
 
-const editFavorite = () => {
+const editFavorite = async () => {
   let accessToken = localStorage.getItem("accessToken")
-  let favImg = document.getElementsByClassName("favImg")
-  let favLink = document.getElementsByClassName("favLink")
-
+  let favImg = getClass("favImg")
+  let favLink = getClass("favLink")
   let links = []
+
   if(favLink[0].href.length > 0) {
     for(let i = 0; i < favImg.length; i++) {
       favImg[i].className += " move"
       favImg[i].style.filter = "grayscale(100%)"
       links.push(favLink[i].href)
       favLink[i].removeAttribute("href")
-      favImg[i].addEventListener("click", (e) => {
+      favImg[i].addEventListener("click", async (e) => {
         let id = e.target.parentNode.parentNode.id
         let removed = getId(id)
         body = {
           status: "unsave",
           recipeId: id
         }
-        fetch("/api/1.0/user/favorite", {
-          method:"POST",
-          headers: {
-            "content-type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
-          },
-          body: JSON.stringify(body)
-        }).then((result) => {
-          return (result.json())
-        }).then((result) => {
-          if(result.status === "Success") {
-            removed.parentNode.removeChild(removed)
-          } else {
-            feedback("系統錯誤", "error")
-          }
-        }).catch((error) => {
-          console.log(error)
-          // alert("系統錯誤")
-        })
+
+        let removedFav = await fetching("/user/favorite", "POST", {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        }, JSON.stringify(body))
+
+        if(removedFav.status === "Success") {
+          removed.parentNode.removeChild(removed)
+        } else {
+          console.log(removedFav)
+          feedback("刪除失敗", "error")
+        }
       })
     }
   } else {
     renderMemberFav(0)
+  }
+}
+
+//* Member Recipes
+const memberRecipe = () => {
+  profileFav.style.backgroundColor = "rgb(255, 194, 80)"
+  profileInfo.style.backgroundColor = "rgb(255, 194, 80)"
+  profileRecipe.style.backgroundColor = "#ffffff60"
+
+  let con2 = getId("con2")
+  while (con2.hasChildNodes()) {
+    con2.removeChild(con2.lastChild)
+  }
+
+  renderMemberRecipe()
+
+}
+
+const renderMemberRecipe = async () => {
+  let con2 = getId("con2")
+  if(localStorage.getItem('userRecipes')) localStorage.removeItem('userRecipes')
+  while (con2.hasChildNodes()) {
+    con2.removeChild(con2.lastChild)
+  }
+  let accessToken = localStorage.getItem("accessToken")
+  body = {
+    status: "list"
+  }
+
+  let render = (response) => {
+    createElement("div", { atrs: {
+      className: "con2_1"
+    }}, con2)
+    let con2_1 = getClass("con2_1")[0]
+    createElement("div", { atrs: {
+      innerText: "我的食譜"
+    }}, con2_1)
+    createElement("div", {
+      atrs: {
+      className: "edit",
+      id: "edit4",
+      },
+      evts: {
+        click:() => editMyRecipe()
+      }
+    }, con2_1)
+    let edit4 = getId("edit4")
+    createElement("img", { atrs: {
+      src: "./img/icon/edit.png",
+      alt: "Edit"
+    }}, edit4)
+    createElement("div", { atrs: {
+      id: "recipeListCon"
+    }}, con2)
+    createElement("input", { 
+      atrs: {
+      id: "addRecipe",
+      value: "新增食譜",
+      type: "button"
+      },
+      evts: {
+        click: () => renderCreateRecipe()
+      }
+    }, con2)
+    let recipeListCon = getId("recipeListCon")
+    createElement("ul", { atrs: {
+      id: "myRecipeNav"
+    }}, recipeListCon)
+    createElement("div", { atrs: {
+      id: "recipeEditCon"
+    }}, recipeListCon)
+    let myRecipeNav = getId("myRecipeNav")
+    let userRecipes = []
+    for(let i = 0; i < response.length; i++) {
+      createElement("li", { atrs: {
+        id: `${response[i].id}list`,
+        className: "myRecipeList"
+      }}, myRecipeNav)
+      let myRecipeList = getClass("myRecipeList")
+      createElement("a", { atrs: {
+        className: "myRecipeLink",
+        innerText: response[i].title,
+        href: `/recipe.html?id=${response[i].id}`
+      }}, myRecipeList[i])
+      userRecipes.push(response[i].id)
+    }
+    
+    localStorage.setItem("userRecipes", userRecipes)
+  }
+
+  let render2 = () => {
+    createElement("div", { atrs: {
+      className: "con2_1"
+    }}, con2)
+    let con2_1 = getClass("con2_1")[0]
+    createElement("div", { atrs: {
+      innerText: "我的食譜"
+    }}, con2_1)
+    createElement("div", { atrs: {
+      id: "recipeListCon"
+    }}, con2)
+    createElement("input", { 
+      atrs: {
+      id: "addRecipe",
+      value: "新增食譜",
+      type: "button"
+      },
+      evts: {
+        click: () => renderCreateRecipe()
+      }
+    }, con2)
+  }
+
+  let userRecipeList = await fetching("/user/recipe", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(!userRecipeList.error) {
+    render(userRecipeList.data)
+  } else {
+    console.log(userRecipeList)
+    render2()
   }
 }
 
@@ -467,7 +593,7 @@ const renderCreateRecipe = () => {
   createElement("div", { atrs: {
     className: "con2_1"
   }}, con2)
-  let con2_1 = document.getElementsByClassName("con2_1")[0]
+  let con2_1 = getClass("con2_1")[0]
   createElement("div", { atrs: {
     innerText: "新增食譜"
   }}, con2_1)
@@ -503,7 +629,7 @@ const renderCreateRecipe = () => {
   createElement("div", { atrs: {
     className: "ingredientCon2",
   }}, ingredientCon)
-  let ingredientCon2 = document.getElementsByClassName("ingredientCon2")[0]
+  let ingredientCon2 = getClass("ingredientCon2")[0]
   createElement("div", { atrs: {
     className: "stepNum ingNum",
     innerText: "1."
@@ -521,7 +647,7 @@ const renderCreateRecipe = () => {
   createElement("div", { atrs: {
     className: "delIngCon stepItem"
   }}, ingredientCon2)
-  let delIngCon = document.getElementsByClassName("delIngCon")[0]
+  let delIngCon = getClass("delIngCon")[0]
   createElement("a", { 
     atrs: {
     className: "delIng",
@@ -571,7 +697,7 @@ const renderCreateRecipe = () => {
   createElement("div", { atrs: {
     className: "stepCon"
   }}, createSteps)
-  let stepCon = document.getElementsByClassName("stepCon")[0]
+  let stepCon = getClass("stepCon")[0]
   createElement("div", { atrs: {
     className: "stepNum stepsNum",
     innerText: "1."
@@ -601,123 +727,71 @@ const renderCreateRecipe = () => {
   }, stepCon)
 }
 
-const renderMemberRecipe = () => {
-  let con2 = getId("con2")
-  if(localStorage.getItem('userRecipes')) localStorage.removeItem('userRecipes')
-  while (con2.hasChildNodes()) {
-    con2.removeChild(con2.lastChild)
-  }
+const createSubmit = async () => {
+  let title = getId("createTitle").value
+  let mainImg = getId("createMainImg").files[0]
+  let createSubmit = getId("createSubmit")
+  let loading = getId("loading")
+  let createIng = getClass("createIng")
+  let createAmount = getClass("createAmount")
+  let createSteps = getClass("createSteps")
+  let createImg = getClass("createImg")
   let accessToken = localStorage.getItem("accessToken")
-  body = {
-    status: "list"
+
+  createSubmit.innerText = ""
+
+  if(!title) return feedback("請填入標題", "error")
+  if(!mainImg) return feedback("請上傳成品圖片", "error")
+  if(createIng.length < 2) return feedback("請填寫至少2種食材", "error")
+  if(createSteps.length < 2) return feedback("請填寫至少2個步驟", "error")
+
+  let fd = new FormData();
+  let imagetype = ["jpg", "jpeg", "png", "gif"]
+
+  fd.append('title', title)
+  let mainImgType = mainImg.type.split("/")[1].toLowerCase()
+  if(imagetype.indexOf(mainImgType) === -1) {
+    return feedback("請使用 jpg/jpeg/png/gif", "error") 
+  }
+  fd.append('mainImg', mainImg)
+  
+  for(let i = 0; i < createIng.length; i++) {
+    if(!createIng[i].value) return feedback(`請輸入食材${i+1}`, "error")
+    fd.append('ingredient', createIng[i].value)
+    if(!createAmount[i].value) return feedback(`請輸入食材${i+1}的數量`, "error")
+    fd.append('amount', createAmount[i].value)
+  }
+  for(let i = 0; i < createSteps.length; i++) {
+    if(!createSteps[i].value) return feedback(`請填入料理步驟${i+1}`, "error")
+    fd.append('steps', createSteps[i].value)
+    if(!createImg[i].files[0]) return feedback(`請上傳料理步驟${i+1}的圖片`, "error")
+    let imgType = createImg[i].files[0].type.split("/")[1].toLowerCase()
+    if(imagetype.indexOf(imgType) === -1) return feedback("請使用 jpg/jpeg/png/gif", "error")
+    fd.append('images', createImg[i].files[0])
   }
 
-  fetch("/api/1.0/user/recipe", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(!result.error) return render(result.data)
-    return render2()
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
+  loading.style.visibility = "visible"
 
-  let render2 = () => {
-    createElement("div", { atrs: {
-      className: "con2_1"
-    }}, con2)
-    let con2_1 = document.getElementsByClassName("con2_1")[0]
-    createElement("div", { atrs: {
-      innerText: "我的食譜"
-    }}, con2_1)
-    createElement("div", { atrs: {
-      id: "recipeListCon"
-    }}, con2)
-    createElement("input", { 
-      atrs: {
-      id: "addRecipe",
-      value: "新增食譜",
-      type: "button"
-      },
-      evts: {
-        click: () => renderCreateRecipe()
-      }
-    }, con2)
-  }
+  let createRecipeStatus = await fetching("/user/recipe/upload", "POST", {
+    "Accept": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, fd)
 
-  let render = (response) => {
-    createElement("div", { atrs: {
-      className: "con2_1"
-    }}, con2)
-    let con2_1 = document.getElementsByClassName("con2_1")[0]
-    createElement("div", { atrs: {
-      innerText: "我的食譜"
-    }}, con2_1)
-    createElement("div", {
-      atrs: {
-      className: "edit",
-      id: "edit4",
-      },
-      evts: {
-        click:() => editMyRecipe()
-      }
-    }, con2_1)
-    let edit4 = getId("edit4")
-    createElement("img", { atrs: {
-      src: "./img/icon/edit.png",
-      alt: "Edit"
-    }}, edit4)
-    createElement("div", { atrs: {
-      id: "recipeListCon"
-    }}, con2)
-    createElement("input", { 
-      atrs: {
-      id: "addRecipe",
-      value: "新增食譜",
-      type: "button"
-      },
-      evts: {
-        click: () => renderCreateRecipe()
-      }
-    }, con2)
-    let recipeListCon = getId("recipeListCon")
-    createElement("ul", { atrs: {
-      id: "myRecipeNav"
-    }}, recipeListCon)
-    createElement("div", { atrs: {
-      id: "recipeEditCon"
-    }}, recipeListCon)
-    let myRecipeNav = getId("myRecipeNav")
-    let userRecipes = []
-    for(let i = 0; i < response.length; i++) {
-      createElement("li", { atrs: {
-        id: `${response[i].id}list`,
-        className: "myRecipeList"
-      }}, myRecipeNav)
-      let myRecipeList = document.getElementsByClassName("myRecipeList")
-      createElement("a", { atrs: {
-        className: "myRecipeLink",
-        innerText: response[i].title,
-        href: `/recipe.html?id=${response[i].id}`
-      }}, myRecipeList[i])
-      userRecipes.push(response[i].id)
-    }
-    
-    localStorage.setItem("userRecipes", userRecipes)
+  loading.style.visibility = "hidden"
+
+  if(createRecipeStatus.status === "Success") {
+    renderMemberRecipe()
+  } else {
+    console.log(createRecipeStatus)
+    createSubmit.innerText = "SUBMIT"
+    feedback("上傳失敗", "error")
   }
 }
 
 const editMyRecipe = () => {
   let recipeEditCon = getId("recipeEditCon")
-  let myRecipeLink = document.getElementsByClassName("myRecipeLink")
-  let updateRecipe = document.getElementsByClassName("updateRecipe")
+  let myRecipeLink = getClass("myRecipeLink")
+  let updateRecipe = getClass("updateRecipe")
   let userRecipes = localStorage.getItem('userRecipes').split(",")
   if(updateRecipe.length === 0){
     for(let i = 0; i < myRecipeLink.length; i++) {
@@ -727,7 +801,7 @@ const editMyRecipe = () => {
         className: "updateCon"
         }
       }, recipeEditCon)
-      let updateCon = document.getElementsByClassName("updateCon")
+      let updateCon = getClass("updateCon")
       createElement("input", { 
         atrs: {
         className: "updateRecipe",
@@ -755,35 +829,20 @@ const editMyRecipe = () => {
   
 }
 
-const updateMyRecipe = (recipeId) => {
+const updateMyRecipe = async (recipeId) => {
   let con2 = getId("con2")
   let accessToken = localStorage.getItem("accessToken")
+
   if(localStorage.getItem('userRecipes')) localStorage.removeItem('userRecipes')
+
   while (con2.hasChildNodes()) {
     con2.removeChild(con2.lastChild)
   }
-  body = {
+
+  let body = {
     status: "update",
     recipeId: recipeId
   }
-
-  fetch("/api/1.0/user/recipe", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    console.log(result)
-    window.localStorage.setItem("recipeId", result.data[0].id)
-    render(result)
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
 
   let render = (response) => {
     let res = response.data[0]
@@ -795,7 +854,7 @@ const updateMyRecipe = (recipeId) => {
     createElement("div", { atrs: {
       className: "con2_1"
     }}, con2)
-    let con2_1 = document.getElementsByClassName("con2_1")[0]
+    let con2_1 = getClass("con2_1")[0]
     createElement("div", { atrs: {
       innerText: "更新食譜"
     }}, con2_1)
@@ -871,7 +930,7 @@ const updateMyRecipe = (recipeId) => {
       createElement("div", { atrs: {
         className: "ingredientCon2",
       }}, ingredientCon)
-      let ingredientCon2 = document.getElementsByClassName("ingredientCon2")[i]
+      let ingredientCon2 = getClass("ingredientCon2")[i]
       createElement("div", { atrs: {
         className: "stepNum ingNum",
         innerText: `${i+1}.`
@@ -891,7 +950,7 @@ const updateMyRecipe = (recipeId) => {
       createElement("div", { atrs: {
         className: "delIngCon stepItem"
       }}, ingredientCon2)
-      let delIngCon = document.getElementsByClassName("delIngCon")[i]
+      let delIngCon = getClass("delIngCon")[i]
       createElement("a", { 
         atrs: {
         className: "delIng",
@@ -908,7 +967,7 @@ const updateMyRecipe = (recipeId) => {
       createElement("div", { atrs: {
         className: "stepCon"
       }}, createSteps)
-      let stepCon = document.getElementsByClassName("stepCon")[i]
+      let stepCon = getClass("stepCon")[i]
       createElement("div", { atrs: {
         className: "stepNum stepsNum",
         innerText: `${i+1}.`
@@ -941,33 +1000,73 @@ const updateMyRecipe = (recipeId) => {
     }
   }
 
+  let recipeData = await fetching("/user/recipe", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(!recipeData.error) {
+    window.localStorage.setItem("recipeId", recipeData.data[0].id)
+    render(recipeData)
+  } else {
+    console.log(recipeData)
+  }
 }
 
-const deleteRecipe = async (recipeId) => {
-  let accessToken = localStorage.getItem("accessToken")
-  let li = getId(`${recipeId}list`) 
-  let update = getId(`${recipeId}update`)
+const updateSubmit = async () => {
+  let fd = new FormData();
+  let title = getId("createTitle").value
+  let mainImg = getId("createMainImg").files[0]
+  let updateSubmit = getId("updateSubmit")
   let loading = getId("loading")
-  body = {
-    recipeId: recipeId
+  let createIng = getClass("createIng")
+  let createAmount = getClass("createAmount")
+  let createSteps = getClass("createSteps")
+  let createImg = getClass("createImg")
+  let imgNum = getClass("imgNum")
+  let accessToken = localStorage.getItem("accessToken")
+  let recipeId = localStorage.getItem("recipeId")
+
+  if(!title) return feedback("請填入標題", "error")
+  if(createIng.length < 2) return feedback("請填寫至少2種食材", "error")
+  if(createSteps.length < 2) return feedback("請填寫至少2個步驟", "error")
+
+  updateSubmit.innerText = ""
+
+  fd.append('title', title)
+  if(mainImg) fd.append('mainImg', mainImg)
+  fd.append('recipeId', recipeId)
+  for(let i = 0; i < createIng.length; i++) {
+    if(!createIng[i].value) return feedback(`請輸入食材${i+1}`, "error")
+    fd.append('ingredient', createIng[i].value)
+    if(!createAmount[i].value) return feedback(`請輸入食材${i+1}的數量`, "error")
+    fd.append('amount', createAmount[i].value)
   }
-  let check = confirm("是否確認要刪除食譜")
-  if(check === true) {
-    loading.style.visibility = "visible"
-    let result = await fetching("/user/recipe", "DELETE", {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    }, body)
-    if(result.status === "Success") {
-      li.parentNode.removeChild(li)
-      update.parentNode.removeChild(update)
-      loading.style.visibility = "hidden"
-      feedback("刪除成功", "error")
-      return 
+  for(let i = 0; i < createSteps.length; i++) {
+    if(!createSteps[i].value) return feedback(`請填入料理步驟${i+1}`, "error")
+    fd.append('steps', createSteps[i].value)
+    if(!imgNum[i].src && !createImg[i].files[0]) return feedback(`請上傳料理步驟${i+1}的圖片`, "error")
+    if(createImg[i].files[0]){
+      fd.append('images', createImg[i].files[0])
+      fd.append('image', i)
+    } else {
+      fd.append('image', imgNum[i].src)
     }
-    loading.style.visibility = "hidden"
-    feedback("刪除失敗", "error")
   }
+  
+  loading.style.visibility = "visible"
+
+  let recipeUpdate = await fetching("/user/recipe/upload", "PUT", {
+    "Accept": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, fd)
+
+  loading.style.visibility = "hidden"
+  
+  if(recipeUpdate.status === "Success") return renderMemberRecipe()
+
+  updateSubmit.innerText = "SUBMIT"
+  feedback("更新失敗", "error")
 }
 
 const addStep = () => {
@@ -975,8 +1074,8 @@ const addStep = () => {
   createElement("div", { atrs: {
     className: "stepCon"
   }}, createSteps)
-  let stepCon = document.getElementsByClassName("stepCon")
-  let stepsNum = document.getElementsByClassName("stepsNum")
+  let stepCon = getClass("stepCon")
+  let stepsNum = getClass("stepsNum")
   let lastStepNum = parseInt(stepsNum[stepsNum.length-1].innerText.split(".")[0])+1
   
   createElement("div", { atrs: {
@@ -1010,13 +1109,13 @@ const addStep = () => {
 
 const addIngredient = () => {
   
-  let ingNum = document.getElementsByClassName("ingNum")
+  let ingNum = getClass("ingNum")
   let lastingNum = parseInt(ingNum[ingNum.length-1].innerText.split(".")[0])+1
 
   createElement("div", { atrs: {
     className: "ingredientCon2",
   }}, ingredientCon)
-  let ingredientCon2 = document.getElementsByClassName("ingredientCon2")
+  let ingredientCon2 = getClass("ingredientCon2")
   createElement("div", { atrs: {
     className: "stepNum ingNum",
     innerText: `${[lastingNum]}.`
@@ -1034,7 +1133,7 @@ const addIngredient = () => {
   createElement("div", { atrs: {
     className: "delIngCon stepItem"
   }}, ingredientCon2[ingredientCon2.length-1])
-  let delIngCon = document.getElementsByClassName("delIngCon")
+  let delIngCon = getClass("delIngCon")
   createElement("a", { 
     atrs: {
     className: "delIng",
@@ -1047,194 +1146,63 @@ const addIngredient = () => {
 }
 
 function delIngredient(event) {
-  let ingNum = document.getElementsByClassName("ingNum")
-  if(ingNum.length > 2) {
-    event.target.parentElement.parentElement.parentNode.removeChild(event.target.parentElement.parentElement)
-    for(let i = 0; i < ingNum.length; i++) {
-      ingNum[i].innerText = `${i+1}.`
+  let ingNum = getClass("ingNum")
+  let check = confirm("是否確認要刪除食材")
+  if(check === true) {
+    if(ingNum.length > 2) {
+      event.target.parentElement.parentElement.parentNode.removeChild(event.target.parentElement.parentElement)
+      for(let i = 0; i < ingNum.length; i++) {
+        ingNum[i].innerText = `${i+1}.`
+      }
+    } else {
+      feedback("至少需要2樣食材", "error")
     }
-  } else {
-    feedback("至少需要2樣食材", "error")
   }
 }
 
 function delStep(event) {
-  let stepsNum = document.getElementsByClassName("stepsNum")
-  if(stepsNum.length > 2) {
-    event.target.parentElement.parentNode.removeChild(event.target.parentElement)
-    for(let i = 0; i < stepsNum.length; i++) {
-      stepsNum[i].innerText = `${i+1}.`
+  let stepsNum = getClass("stepsNum")
+  let check = confirm("是否確認要刪除步驟")
+    if(check === true) {
+      if(stepsNum.length > 2) {
+        event.target.parentElement.parentNode.removeChild(event.target.parentElement)
+        for(let i = 0; i < stepsNum.length; i++) {
+          stepsNum[i].innerText = `${i+1}.`
+        }
+      } else {
+        feedback("至少需要2個步驟", "error")
+      }
     }
-  } else {
-    feedback("至少需要2個步驟", "error")
-  }
 }
 
-const createSubmit = () => {
-  let title = getId("createTitle").value
-  let mainImg = getId("createMainImg").files[0]
-  let createSubmit = getId("createSubmit")
-  let loading = getId("loading")
-  let createIng = document.getElementsByClassName("createIng")
-  let createAmount = document.getElementsByClassName("createAmount")
-  let createSteps = document.getElementsByClassName("createSteps")
-  let createImg = document.getElementsByClassName("createImg")
+const deleteRecipe = async (recipeId) => {
   let accessToken = localStorage.getItem("accessToken")
-
-  createSubmit.innerText = ""
-
-  if(!title) return feedback("請填入標題", "error")
-  if(!mainImg) return feedback("請上傳成品圖片", "error")
-  if(createIng.length < 2) return feedback("請填寫至少2種食材", "error")
-  if(createSteps.length < 2) return feedback("請填寫至少2個步驟", "error")
-
-  let fd = new FormData();
-  let imagetype = ["jpg", "jpeg", "png", "gif"]
-
-  fd.append('title', title)
-  let mainImgType = mainImg.type.split("/")[1].toLowerCase()
-  if(imagetype.indexOf(mainImgType) === -1) {
-    return feedback("請使用 jpg/jpeg/png/gif", "error") 
+  let li = getId(`${recipeId}list`) 
+  let update = getId(`${recipeId}update`)
+  let loading = getId("loading")
+  body = {
+    recipeId: recipeId
   }
-  fd.append('mainImg', mainImg)
-  
-  for(let i = 0; i < createIng.length; i++) {
-    if(!createIng[i].value) return feedback(`請輸入食材${i+1}`, "error")
-    fd.append('ingredient', createIng[i].value)
-    if(!createAmount[i].value) return feedback(`請輸入食材${i+1}的數量`, "error")
-    fd.append('amount', createAmount[i].value)
-  }
-  for(let i = 0; i < createSteps.length; i++) {
-    if(!createSteps[i].value) return feedback(`請填入料理步驟${i+1}`, "error")
-    fd.append('steps', createSteps[i].value)
-    if(!createImg[i].files[0]) return feedback(`請上傳料理步驟${i+1}的圖片`, "error")
-    let imgType = createImg[i].files[0].type.split("/")[1].toLowerCase()
-    if(imagetype.indexOf(imgType) === -1) return feedback("請使用 jpg/jpeg/png/gif", "error")
-    fd.append('images', createImg[i].files[0])
-  }
-
-  loading.style.visibility = "visible"
-
-  fetch("/api/1.0/user/recipe/upload", {
-    method:"POST",
-    headers: {
-      "Accept": "application/json",
+  let check = confirm("是否確認要刪除食譜")
+  if(check === true) {
+    loading.style.visibility = "visible"
+    let deleteStatus = await fetching("/user/recipe", "DELETE", {
+      "Content-Type": "application/json",
       "Authorization": `Bearer ${accessToken}`
-    },
-    body: fd
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    loading.style.visibility = "hidden"
-    if(result.status === "Success") return renderMemberRecipe()
-    createSubmit.innerText = "SUBMIT"
-    return feedback("上傳失敗", "error")
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
-}
-
-const updateSubmit = () => {
-  let fd = new FormData();
-  let title = getId("createTitle").value
-  let mainImg = getId("createMainImg").files[0]
-  let updateSubmit = getId("updateSubmit")
-  let loading = getId("loading")
-  let createIng = document.getElementsByClassName("createIng")
-  let createAmount = document.getElementsByClassName("createAmount")
-  let createSteps = document.getElementsByClassName("createSteps")
-  let createImg = document.getElementsByClassName("createImg")
-  let imgNum = document.getElementsByClassName("imgNum")
-  let accessToken = localStorage.getItem("accessToken")
-  let recipeId = localStorage.getItem("recipeId")
-
-  if(!title) return feedback("請填入標題", "error")
-  if(createIng.length < 2) return feedback("請填寫至少2種食材", "error")
-  if(createSteps.length < 2) return feedback("請填寫至少2個步驟", "error")
-
-  updateSubmit.innerText = ""
-
-  fd.append('title', title)
-  if(mainImg) fd.append('mainImg', mainImg)
-  fd.append('recipeId', recipeId)
-  for(let i = 0; i < createIng.length; i++) {
-    if(!createIng[i].value) return feedback(`請輸入食材${i+1}`, "error")
-    fd.append('ingredient', createIng[i].value)
-    if(!createAmount[i].value) return feedback(`請輸入食材${i+1}的數量`, "error")
-    fd.append('amount', createAmount[i].value)
-  }
-  for(let i = 0; i < createSteps.length; i++) {
-    if(!createSteps[i].value) return feedback(`請填入料理步驟${i+1}`, "error")
-    fd.append('steps', createSteps[i].value)
-    if(!imgNum[i].src && !createImg[i].files[0]) return feedback(`請上傳料理步驟${i+1}的圖片`, "error")
-    if(createImg[i].files[0]){
-      fd.append('images', createImg[i].files[0])
-      fd.append('image', i)
-    } else {
-      fd.append('image', imgNum[i].src)
+    }, fd)
+    if(deleteStatus.status === "Success") {
+      li.parentNode.removeChild(li)
+      update.parentNode.removeChild(update)
+      loading.style.visibility = "hidden"
+      feedback("刪除成功", "error")
+      return 
     }
-  }
-  
-  loading.style.visibility = "visible"
-
-  fetch("/api/1.0/user/recipe/upload", {
-    method:"PUT",
-    headers: {
-      "Accept": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: fd
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    console.log(result)
     loading.style.visibility = "hidden"
-    if(result.status === "Success") return renderMemberRecipe()
-    updateSubmit.innerText = "SUBMIT"
-    return feedback("更新失敗", "error")
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
-}
-
-const memberInfo = () => {
-  profileRecipe.style.backgroundColor = "rgb(255, 194, 80)"
-  profileFav.style.backgroundColor = "rgb(255, 194, 80)"
-  profileInfo.style.backgroundColor = "#ffffff60"
-  
-  let con2 = getId("con2")
-  while (con2.hasChildNodes()) {
-    con2.removeChild(con2.lastChild)
+    feedback("刪除失敗", "error")    
   }
-
-  renderProfile() 
 }
 
-const memberFav = () => {
-  profileRecipe.style.backgroundColor = "rgb(255, 194, 80)"
-  profileInfo.style.backgroundColor = "rgb(255, 194, 80)"
-  profileFav.style.backgroundColor = "#ffffff60"
-
-  renderMemberFav(0)
-
-}
-
-const memberRecipe = () => {
-  profileFav.style.backgroundColor = "rgb(255, 194, 80)"
-  profileInfo.style.backgroundColor = "rgb(255, 194, 80)"
-  profileRecipe.style.backgroundColor = "#ffffff60"
-
-  let con2 = getId("con2")
-  while (con2.hasChildNodes()) {
-    con2.removeChild(con2.lastChild)
-  }
-
-  renderMemberRecipe()
-
-}
-
+//* Message
 const feedback = (msg, status) => {
   let createSubmit = getId("createSubmit")
   let feedbackMsg  = getId("feedbackMsg")

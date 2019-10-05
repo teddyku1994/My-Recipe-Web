@@ -18,24 +18,32 @@ module.exports = {
     return data
   },
   update: async (userId, info, error) => {
-    let sql
-    let result
-    if(!info[1]) {
-      sql = 'UPDATE user SET name = ? WHERE id = ?'
-      result = await connection.sqlQuery(sql, [info[0], userId], error)
-    } else {
-      sql = 'SELECT image FROM user WHERE id = ?'
-      let oldDp = await connection.sqlQuery(sql, userId, error)
-      let oldDpPath = oldDp[0].image.replace('https://myrecipsebucket.s3.amazonaws.com', '')
-      oldDpPath = oldDpPath.substr(1, oldDpPath.length - 1)
-      await file.deleteS3File(oldDpPath)
-      sql = 'UPDATE user SET name = ?, image = ? WHERE id = ?'
-      result = await connection.sqlQuery(sql, [info[0], info[1], userId], error)
-    }
-    if(result.affectedRows === 1) {
-      return {status:'Success'}
-    } else {
-      return util.error('Invalid Token')
+    try {
+      console.log(info)
+      let sql
+      let result
+      if(!info[1]) {
+        sql = 'UPDATE user SET name = ? WHERE id = ?'
+        result = await connection.sqlQuery(sql, [info[0], userId], error)
+      } else {
+        sql = 'SELECT image FROM user WHERE id = ?'
+        let oldDp = await connection.sqlQuery(sql, userId, error)
+        if(oldDp[0].image) {
+          let oldDpPath = oldDp[0].image.replace('https://myrecipsebucket.s3.amazonaws.com', '')
+          oldDpPath = oldDpPath.substr(1, oldDpPath.length - 1)
+          await file.deleteS3File(oldDpPath)
+        }
+        sql = 'UPDATE user SET name = ?, image = ? WHERE id = ?'
+        result = await connection.sqlQuery(sql, [info[0], info[1], userId], error)
+      }
+      if(result.affectedRows === 1) {
+        return {status:'Success'}
+      } else {
+        return util.error('Invalid Token')
+      }
+    } catch (err) {
+      console.log(err)
+      return err
     }
   },
   listRecipe: async (userId, error) => {

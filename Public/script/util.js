@@ -70,57 +70,10 @@ const fetching = async (src, method, headers, body) =>{
 	}
 }
 
-const ajax = (method, src, args, headers, callback) => {
-	let xhr=new XMLHttpRequest();
-	if(method.toLowerCase()==="post"){
-		xhr.open(method, src);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onload = () => {
-			console.log(xhr.response)
-			callback(JSON.parse(xhr.response));
-		};
-		xhr.send(JSON.stringify(args));
-	}else{ 
-		xhr.open(method, src+"?"+args);
-		xhr.onload = () => {
-			callback(xhr.response);
-		};
-		xhr.send();
-	}
-};
-
 const removechild = (child) => {
 	let removed = document.querySelector(child)
 	removed.parentNode.removeChild(removed)
 }
-
-//Profile
-// const verifyAcc = () => {
-// 	let accessToken = localStorage.getItem('accessToken')
-// 	if (!accessToken) return window.location = "/index.html"
-// 	fetch("/api/1.0/user/verify", {
-//     method:"POST",
-//     headers: {
-//       "Accept": "application/json",
-//       "Authorization": `Bearer ${accessToken}`
-//     }
-//   }).then((result) => {
-//     return (result.json())
-//   }).then((result) => {
-//     if(result.status === "Valid Token") {
-//       console.log('here')
-//       signin.style.display = "none"
-//       signup.style.display = "none"
-//       mainNav.style.margin = "1em 0"
-//       profile.style.display = "unset"
-//     } else {
-//   		window.location = "/index.html"
-//     }
-//   }).catch((error) => {
-//     console.log(error)
-//     // alert("系統錯誤")
-//   })
-// }
 
 const verifyStatus = async () => {
 	let accessToken = localStorage.getItem('accessToken')
@@ -129,4 +82,14 @@ const verifyStatus = async () => {
     "Authorization": `Bearer ${accessToken}`
 	}, null)
 	return tokenStatus
+}
+
+const doubleCheckStatus = async () => {
+	try {
+		let status = await verifyStatus()
+		if(!status.status === "Valid Token") return window.location = "/index.html"
+	} catch (err) {
+		window.location = "/index.html"
+	}
+	
 }
