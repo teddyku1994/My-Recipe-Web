@@ -70,7 +70,6 @@ router.post('/user/recipe/upload', verification.verifyToken, file.uploadRecipe, 
   }
 })
 
-//! Still require refatoring - Add delete S3 file
 router.put('/user/recipe/upload', verification.verifyToken, file.uploadRecipe, cache.deleteCache, async (req,res) => {
   try {
     let body = req.body

@@ -1,11 +1,9 @@
-let con2 = getId('con2')
-
-const hots = () => {
-
+const hots = async () => {
+  let con2 = getId('con2')
   let numArr = [0,1,2,3,4,5,6,7,8,9,10,11]
+  
   let shuffle = (arr, numbers) => {
     let num = arr.slice()
-    
     let newArr = []
     for (let i = 0; i < numbers; i++) {
       let randomNum = Math.floor(Math.random() * num.length-1)
@@ -13,24 +11,6 @@ const hots = () => {
     }
     return newArr.reduce((a,b) => a.concat(b))
   }
-
-  fetch("/api/1.0/recipe/hots", {
-    method:"GET",
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(!result.error) {
-      console.log(result)
-      return render(result)
-    }
-    console.log(result)
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
 
   let render = (response) => {
     let randomNum = shuffle(numArr, 8)
@@ -53,6 +33,16 @@ const hots = () => {
       className: "hotsBanner"
     }}, con2)
   }
+
+  let hotRecipes = await fetching("/recipe/hots", "GET", {"Content-Type": "application/json",}, null)
+
+  !hotRecipes.error ? render(hotRecipes) : console.log(hotRecipes)
+}
+
+const recipeSearch3 = () => {
+  let dishName = getId("search_txt").value
+  if(!dishName) return
+  window.location = `/searchList.html?dishName=${dishName}&page=0`
 }
 
 let controller = new ScrollMagic.Controller();

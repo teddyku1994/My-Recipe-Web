@@ -24,10 +24,16 @@ router.get('/search', async (req, res) => {
 })
 
 router.post('/search', verification.verifyContentType, async (req, res) => {
-  let body = req.body
-  let error = error => console.log(error)
-  let result = await recipe.searchRecords(body, error)
-  return res.json(result)
+  try {
+    let body = req.body
+    let error = error => console.log(error)
+    let result = await recipe.searchRecords(body, error)
+    console.log(result)
+    return res.json(result)
+  } catch (err) {
+    console.log(err)
+    return res.json("Invalid Token")
+  }
 })
 
 router.get('/search/hotKeywords', verification.verifyContentType, async (req, res) => {

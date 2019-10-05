@@ -1,7 +1,6 @@
 module.exports = {
   error:(message) => {
-    let error = {}
-    error.error = message
+    let error = {error: message}
     return error
   },
   paging:(limit, totalPage, page, data) => {
@@ -12,5 +11,8 @@ module.exports = {
     if(Math.floor(totalPage/limit) > 0 && totalPage > limit) {
       data.totalPage = Math.floor(totalPage/limit)
     }
+  },
+  errorHandling: (error) => {
+    
   }
 }

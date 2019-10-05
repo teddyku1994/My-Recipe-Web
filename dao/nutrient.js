@@ -19,9 +19,7 @@ module.exports = {
       ELSE ${connection.escape(`${keyword}%`)}
       END 
       LIMIT  ${connection.escape(limit)}`
-      console.log(sql)
       let relevantFoodList = await connection.sqlQuery(sql, null, error)
-      console.log(relevantFoodList)
       let names = relevantFoodList.map((food) => {
         return food.name
       })

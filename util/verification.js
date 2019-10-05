@@ -15,14 +15,14 @@ module.exports={
   },
   verifyToken:(req, res, next) => {
     try{
-      if(!req.headers.authorization || !req.headers.authorization.includes("Bearer")) return res.json(util.error('Invalid Token'))
+      if(!req.headers.authorization || !req.headers.authorization.includes("Bearer")) return res.json(util.error('Not Authorized'))
       let token = req.headers.authorization.replace('Bearer ', '')
       let decoded = jwt.verify(token, process.env.JWT_KEY)
       req.userId = decoded.userId
       next()
     } catch (err) {
       console.log(err)
-      return res.json(util.error('Invalid Token'))
+      return res.json(util.error('Not Authorized'))
     }
   },
   verifyContentType: (req, res, next) => {

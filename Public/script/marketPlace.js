@@ -1,5 +1,3 @@
-let searchText = getId("searchText")
-
 const searchPrice = () => {
   let searchTitle = getId("searchTitle")
   let listTitle = getId("listTitle")
