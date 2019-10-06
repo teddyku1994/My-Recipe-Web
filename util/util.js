@@ -1,3 +1,8 @@
+const err = msg => {
+  let error = {error: msg}
+  return error
+}
+
 module.exports = {
   error:(message) => {
     let error = {error: message}
@@ -13,24 +18,28 @@ module.exports = {
     }
   },
   errorHandling: (error, res) => {
+    console.log("errorHandling",error)
     if(error instanceof TypeError) {
       console.log("TypeError", error)
-      res.status(400).json('Bad Request')
+      res.status(400).json(err('Bad Request'))
     } else if(error instanceof SyntaxError) {
       console.log("SyntaxError", error)
-      res.status(400).json('Bad Request')
+      res.status(400).json(err('Bad Request'))
     } else if(error instanceof RangeError) {
       console.log("RangeError", error)
-      res.status(400).json('Bad Request')
+      res.status(400).json(err('Bad Request'))
     } else if (error instanceof ReferenceError) {
       console.log("ReferenceError", error)
-      res.status(400).json('Bad Request')
-    } else if(error instanceof ER_BAD_FIELD_ERROR) {
+      res.status(400).json(err('Bad Request'))
+    } else if(error.Error === "ER_BAD_FIELD_ERROR") {
       console.log("ER_BAD_FIELD_ERROR", error)
-      res.status(400).json('Bad Request')
+      res.status(400).json(err('Bad Request'))
+    } else if(error.Error === "ER_BAD_FIELD_ERROR") {
+      console.log("ER_BAD_FIELD_ERROR", error)
+      res.status(400).json(err('Bad Request'))
     } else {
       console.log("Others", error)
-      res.status(500).json('Internal Server Error')
+      res.status(500).json(err('Internal Server Error'))
     }
   }
 }

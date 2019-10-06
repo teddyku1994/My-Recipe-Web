@@ -6,14 +6,20 @@ module.exports = {
         if(params) {
             return new Promise((resolve,reject) => {
                 mysql.pool.query(sql,params,(err, result) => {
-                if (err) reject(cb(err))
+                if (err) {
+                    cb(err)
+                    reject((err))
+                }
                 else resolve(result)
                 })
             });  
         } else {
             return new Promise((resolve,reject) => {
                 mysql.pool.query(sql, (err, result) => {
-                if (err) reject(cb(err))
+                    if (err) {
+                        cb(err)
+                        reject((err))
+                    }
                 else resolve(result)
                 })
             });
@@ -21,7 +27,6 @@ module.exports = {
     },
     escape: (variable) => {
         variable = mysql.pool.escape(variable)
-        console.log(variable)
         return variable
     },
     html: (link, time) => {

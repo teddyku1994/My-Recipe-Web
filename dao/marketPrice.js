@@ -12,8 +12,7 @@ const traceListSingle = async (userId, keyword) => {
     keylist.indexOf(keyword) === -1 ? null : exist += 1
     return exist
   } catch(err) {
-    console.log(err)
-    return util.error('Invalid Token')
+    throw err
   }
 }
 
@@ -24,8 +23,7 @@ const priceExist = async (userId, response) => {
     responseCopy.data[0]['exist'] = exist
     return responseCopy
   } catch (err) {
-    console.log(err)
-    return util.error('Invalid Token')
+    throw err
   }
 }
 
@@ -61,8 +59,7 @@ module.exports = {
         return util.error('Invalid Token')
       }
     } catch (err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     }
   },
   traceGreenPrice: async (userId, args) => {
@@ -77,8 +74,7 @@ module.exports = {
       await db.redis.hsetAsync("tracelist", greenName, updateLink[greenName])
       return {status: "Success"}
     } catch(err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     } 
   },
   traceList: async (userId) => {
@@ -97,8 +93,7 @@ module.exports = {
       await db.redis.hsetAsync('userList', userId, JSON.stringify(updatedUserList))
       return updatedUserList
     } catch(err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     }
   },
   traceDelete: async (userId, delItem) => {
@@ -108,8 +103,7 @@ module.exports = {
       await db.redis.hdelAsync('userList', userId)
       return {status: "Success"}
     } catch(err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     }
   }
 }

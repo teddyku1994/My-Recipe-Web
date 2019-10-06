@@ -5,7 +5,8 @@ module.exports={
     try {
       return cache = await db.redis.hsetAsync(hash, key, value)
     } catch (err) {
-      return cb(err)
+      cb(err)
+      throw (err)
     }
   },
   getHashCache: async (hash, key, cb) => {
@@ -13,14 +14,16 @@ module.exports={
       let cache = await db.redis.hgetAsync(hash, key)
       return JSON.parse(cache)
     } catch (err) {
-      return cb(err)
+      cb(err)
+      throw (err)
     }
   },
   createSetCache: async (key, timer, value, cb) => {
     try {
       return cache = await db.redis.setexAsync(key, timer, value)
     } catch (err) {
-      return cb(err)
+      cb(err)
+      throw (err)
     }
   },
   getSetCache: async (key, cb) => {
@@ -28,7 +31,8 @@ module.exports={
       let cache = await db.redis.getAsync(key)
       return JSON.parse(cache)
     } catch (err) {
-      return cb(err)
+      cb(err)
+      throw (err)
     }
   },
   deleteCache: async (req, res, next) => {
@@ -37,8 +41,7 @@ module.exports={
       await db.redis.hdelAsync('recipePage', id)
       next()
     } catch (err) {
-      console.log(err)
-      return res.json(new Error('Invalid Token'))
+      res.json(new Error('Invalid Token'))
     }
   }
 }

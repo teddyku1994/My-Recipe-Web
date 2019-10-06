@@ -10,12 +10,11 @@ router.use(express.json())
 router.post('/nutrient/list', verification.verifyContentType, async (req, res) => {
   try {
     body = req.body
-    let error = error => res.json(error)
+    let error = error => console.log(error)
     let result  = await nutrient.nutrientList(body.keyword.replace(/\s+/gi, ''), 9, error)
-    return res.json(result)
+    res.json(result)
   } catch (err) {
-    console.log(err)
-    return res.json(util.error('Invalid Token'))
+    util.errorHandling(err, res)
   }
 })
 
@@ -28,10 +27,9 @@ router.post('/nutrient/name', verification.verifyContentType, async (req, res) =
     let nutrientData = await nutrient.nutrientSearch(nutName, error)
     if(nutrientData.length <= 0) return res.json(nutrientData)
     await cache.createSetCache(nutName, 604800, JSON.stringify(nutrientData), error)
-    return res.json(nutrientData)
+    res.json(nutrientData)
   } catch (err) {
-    console.log(err)
-    return res.json(util.error('Invalid Token'))
+    util.errorHandling(err, res)
   }
 })
 

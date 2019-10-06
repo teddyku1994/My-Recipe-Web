@@ -6,8 +6,7 @@ const verification = require('../util/verification')
 const util = require('../util/util')
 
 module.exports = {
-  //! Add Transition
-  signup: async (body, error) => {
+  signup: async (body) => {
     try {
       if(!body.name||!body.email||!body.pw||!body.confirmPw) {
         return util.error('All fields required')
@@ -48,8 +47,7 @@ module.exports = {
         })
       })
     } catch (err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     }
   },
   signin: async (body, error) => {
@@ -59,9 +57,9 @@ module.exports = {
         if(!body.email||!body.pw||!body.provider) {
           return error.util('All fields required')
         }
-        let sql = 'SELECT * FROM user WHERE email = ? AND provider = ?'
+        let sql = 'SELECTT * FROM user WHERE email = ? AND provider = ?'
         let account = await connection.sqlQuery(sql,[body.email, body.provider],error)
-        if(account.length === 0 ) return util.error('Invalid Token')
+        if(account.length === 0) return util.error('Invalid Token')
         let password1 = body.pw
         let password2 = account[0].password
         let isMatch = await bcrypt.compare(password1, password2)
@@ -104,23 +102,26 @@ module.exports = {
         }
       }
     } catch (err) {
-      console.log(err)
-      return util.error('Invalid Token')
+      throw err
     }
   },
   changePw: async (body, userId, error) => {
-    let oldPw = body.oldPw
-    let newPw = body.newPw
-    if(!oldPw || !newPw) return util.error('Invalid Token')
-    let sql = 'SELECT password FROM user WHERE id = ?'
-    let result = await connection.sqlQuery(sql, userId, error)
-    let isMatch = await bcrypt.compare(oldPw, result[0].password)
-    if(!isMatch) return util.error('Invalid Password')
-    newPw = await bcrypt.hash(newPw, 10)
-    let sql2 = `UPDATE user SET password = ? WHERE id = ?`
-    let result2 = await connection.sqlQuery(sql2, [newPw, userId], error)
-    console.log(result2)
-    if(result2.affectedRows === 1) return {status:"Success"}
-    return util.error("Invalid Token")
+    try {
+      let oldPw = body.oldPw
+      let newPw = body.newPw
+      if(!oldPw || !newPw) return util.error('Invalid Token')
+      let sql = 'SELECT password FROM user WHERE id = ?'
+      let result = await connection.sqlQuery(sql, userId, error)
+      let isMatch = await bcrypt.compare(oldPw, result[0].password)
+      if(!isMatch) return util.error('Invalid Password')
+      newPw = await bcrypt.hash(newPw, 10)
+      let sql2 = `UPDATE user SET password = ? WHERE id = ?`
+      let result2 = await connection.sqlQuery(sql2, [newPw, userId], error)
+      console.log(result2)
+      if(result2.affectedRows === 1) return {status:"Success"}
+      return util.error("Invalid Token")
+    } catch (err) {
+      throw err
+    }
   }
 }

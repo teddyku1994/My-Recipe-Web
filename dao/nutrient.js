@@ -2,9 +2,13 @@ const connection = require('../dao/promiseFunc')
 
 module.exports = {
   nutrientSearch: async (keyword, error) => {
-    let sql = `SELECT * FROM nutrient WHERE name = ?`
-    let nutrientData = await connection.sqlQuery(sql, keyword, error)
-    return {data: nutrientData}
+    try {
+      let sql = `SELECT * FROM nutrient WHERE name = ?`
+      let nutrientData = await connection.sqlQuery(sql, keyword, error)
+      return {data: nutrientData}
+    } catch (err) {
+      throw err
+    }
   },
   nutrientList: async (keyword, limit, error) => {
     try {
@@ -27,8 +31,7 @@ module.exports = {
       nameObj.names = names
       return {data: [nameObj]}
     } catch (err) {
-      console.log(err)
-      return err
+      throw err
     }
   }
 } 

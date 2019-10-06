@@ -6,16 +6,20 @@ const file =  require('../util/file')
 
 module.exports = {
   getInfo: async (userId, error) => {
-    let sql = `SELECT * FROM user WHERE id = ?`
-    let userData = await connection.sqlQuery(sql, userId, error)
-    if(userData.length === 0) return util.error('Invalid userId')
-    if(userData[0].image) {
-      if(!userData[0].image.includes("https://")) {
-        userData[0].image = `https://d1lpqhjzd6rmjw.cloudfront.net${userData[0].image}`
+    try {
+      let sql = `SELECT * FROM user WHERE id = ?`
+      let userData = await connection.sqlQuery(sql, userId, error)
+      if(userData.length === 0) return util.error('Invalid userId')
+      if(userData[0].image) {
+        if(!userData[0].image.includes("https://")) {
+          userData[0].image = `https://d1lpqhjzd6rmjw.cloudfront.net${userData[0].image}`
+        }
       }
+      let data = { data: userData }
+      return data
+    } catch (err) {
+      throw err
     }
-    let data = { data: userData }
-    return data
   },
   update: async (userId, info, error) => {
     try {
@@ -42,22 +46,29 @@ module.exports = {
         return util.error('Invalid Token')
       }
     } catch (err) {
-      console.log(err)
-      return err
+      throw err
     }
   },
   listRecipe: async (userId, error) => {
-    let sql = 'SELECT * FROM recipe WHERE user_id = ?'
-    let result = await connection.sqlQuery(sql, userId, error)
-    if(result.length === 0) return util.error('No Result')
-    let data = {data:result}
-    return data
+    try {
+      let sql = 'SELECT * FROM recipe WHERE user_id = ?'
+      let result = await connection.sqlQuery(sql, userId, error)
+      if(result.length === 0) return util.error('No Result')
+      let data = {data:result}
+      return data
+    } catch (err) {
+      throw err
+    }
   },
   userRecipe: async (userId, recipeId, error) => {
-    let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
-    let checkExist = await connection.sqlQuery(sql, [recipeId, userId], error)
-    let uerRecipe = await recipe.listDish(checkExist[0].id)
-    return uerRecipe
+    try {
+      let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
+      let checkExist = await connection.sqlQuery(sql, [recipeId, userId], error)
+      let uerRecipe = await recipe.listDish(checkExist[0].id)
+      return uerRecipe
+    } catch (err) {
+      throw err
+    }
   },
   createRecipe: (body, file, userId) => {
     let {mainImg, images} = file
@@ -83,7 +94,7 @@ module.exports = {
       db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
-            reject("Database Query Error: "+error);
+            reject(error);
             return con.rollback(() => con.release())
           } else {
             let recipeData = {
@@ -94,7 +105,7 @@ module.exports = {
             let sql = 'INSERT INTO recipe SET ?'
             con.query(sql, recipeData, (error, result) => {
               if(error) {
-                reject("Database Query Error: "+error);
+                reject(error);
                 return con.rollback(() => con.release())
               }
               let recipeId = result.insertId
@@ -106,19 +117,19 @@ module.exports = {
               }
               con.query(sql, ingredientData, (error, result) => {
                 if(error){
-                  reject("Database Query Error: "+error);
+                  reject(error);
                   return con.rollback(() => con.release())
                 }
                 method.map(item => item.push(recipeId))
                 let sql = `INSERT INTO method (step, image, recipe_id) VALUES ?`
                 con.query(sql, [method], (error, result) => {
                   if(error){
-                    reject("Database Query Error: "+error);
+                    reject(error);
                     return con.rollback(() => con.release())
                   }
                   con.commit((error) => {
                     if(error){
-                      reject("Database Query Error: "+error)
+                      reject(error)
                       return con.rollback(() => con.release())
                     }
                     resolve({status:"Success"})
@@ -167,7 +178,7 @@ module.exports = {
       db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
-            reject("Database Query Error: "+error);
+            reject(error);
             return con.rollback(() => con.release())
           } else {
             let sql
@@ -181,7 +192,7 @@ module.exports = {
             }
             con.query(sql, mainImgData, (error, result) => {
               if(error) {
-                reject("Database Query Error: "+error);
+                reject(error);
                 con.rollback(() => con.release())
                 return "error"
               }
@@ -190,7 +201,7 @@ module.exports = {
             let sql2 = 'UPDATE ingredient SET name = ?, amount = ? WHERE recipe_id = ?'
             con.query(sql2, [ingredient, amount, body.recipeId], (error, result) => {
               if(error) {
-                reject("Database Query Error: "+error);
+                reject(error);
                 return con.rollback(() => con.release())
               }
               console.log("ok2")
@@ -198,7 +209,7 @@ module.exports = {
             let sql3 = 'DELETE FROM method WHERE recipe_id = ?'
             con.query(sql3, body.recipeId, (error, result) => {
               if(error) {
-                reject("Database Query Error: "+error);
+                reject(error);
                 return con.rollback(() => con.release())
               }
               console.log("ok3")
@@ -208,12 +219,12 @@ module.exports = {
             let sql4 = `INSERT INTO method (step, image, recipe_id) VALUES ?`
             con.query(sql4, [method], (error, result) => {
               if(error) {
-                reject("Database Query Error: "+error);
+                reject(error);
                 return con.rollback(() => con.release())
               }
               con.commit((error) => {
                 if(error){
-                  reject("Database Query Error: "+error)
+                  reject(error)
                   return con.rollback(() => con.release())
                 }
                 resolve({status:"Success"})
@@ -245,26 +256,29 @@ module.exports = {
         }
       }
     } catch (err) {
-      console.log(err)
-      return util.error("Invalid Token")
+      throw err
     }
   },
   deleteRecipe: async (body, userId, error) => {
-    let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
-    let result = await connection.sqlQuery(sql, [body.recipeId, userId], error)
-    if (!result) return util.error('Invalid Token')
-    let sql2 = 'SELECT recipe.image AS mainImg, method.image  FROM recipe LEFT JOIN method ON recipe.id = method.recipe_id WHERE recipe.id = ?'
-    let recipeImages = await connection.sqlQuery(sql2, body.recipeId, error)
-    let mainImageURL = recipeImages[0].mainImg.substr(1, recipeImages[0].mainImg.length - 1)
-    console.log(mainImageURL)
-    await file.deleteS3File(mainImageURL)
-    let imagesURL = recipeImages.map(images => images.image)
-    for(let i = 0; i < imagesURL.length; i++) {
-      let imageURL = imagesURL[i].substr(1, imagesURL[i].length - 1)
-      await file.deleteS3File(imageURL)
+    try {
+      let sql = 'SELECT * FROM recipe WHERE id = ? AND user_id = ?'
+      let result = await connection.sqlQuery(sql, [body.recipeId, userId], error)
+      if (!result) return util.error('Invalid Token')
+      let sql2 = 'SELECT recipe.image AS mainImg, method.image  FROM recipe LEFT JOIN method ON recipe.id = method.recipe_id WHERE recipe.id = ?'
+      let recipeImages = await connection.sqlQuery(sql2, body.recipeId, error)
+      let mainImageURL = recipeImages[0].mainImg.substr(1, recipeImages[0].mainImg.length - 1)
+      console.log(mainImageURL)
+      await file.deleteS3File(mainImageURL)
+      let imagesURL = recipeImages.map(images => images.image)
+      for(let i = 0; i < imagesURL.length; i++) {
+        let imageURL = imagesURL[i].substr(1, imagesURL[i].length - 1)
+        await file.deleteS3File(imageURL)
+      }
+      let sql3 = 'DELETE FROM recipe WHERE id = ?'
+      await connection.sqlQuery(sql3, body.recipeId, error)
+      return({status:"Success"})
+    } catch (err) {
+      throw err
     }
-    let sql3 = 'DELETE FROM recipe WHERE id = ?'
-    await connection.sqlQuery(sql3, body.recipeId, error)
-    return({status:"Success"})
   }
 }
