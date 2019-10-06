@@ -237,11 +237,21 @@ nutSearch.addEventListener("keyup", (event) => {
 
 //* Market Search
 const Market = async () => {
+  let accessToken = localStorage.getItem('accessToken')
+  let recipeMsg = getId("recipeMsg")
+  if(!accessToken) {
+    recipeMsg.style.left  = "28%"
+    recipeMsg.innerText = "此功能為用戶功能，請先註冊/登入，謝謝"
+    recipeMsg.className = ""
+    recipeMsg.offsetWidth
+    recipeMsg.className = "requireAcc"
+    window.localStorage.clear()
+    return
+  }
   let status = await verifyStatus()
   if(status.status === "Valid Token") {
     window.location = "/marketPlace.html"
   } else {
-    let recipeMsg = getId("recipeMsg")
     recipeMsg.style.left  = "28%"
     recipeMsg.innerText = "此功能為用戶功能，請先註冊/登入，謝謝"
     recipeMsg.className = ""

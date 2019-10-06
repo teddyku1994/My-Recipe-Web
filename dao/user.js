@@ -57,7 +57,7 @@ module.exports = {
         if(!body.email||!body.pw||!body.provider) {
           return error.util('All fields required')
         }
-        let sql = 'SELECTT * FROM user WHERE email = ? AND provider = ?'
+        let sql = 'SELECT * FROM user WHERE email = ? AND provider = ?'
         let account = await connection.sqlQuery(sql,[body.email, body.provider],error)
         if(account.length === 0) return util.error('Invalid Token')
         let password1 = body.pw
