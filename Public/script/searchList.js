@@ -163,42 +163,49 @@ const noResultRender = () => {
   }}, con2)
 }
 
-const nextPage = (num, args) => {
-  let url = document.URL
-  let params = new URL(url).searchParams
-  let dishName = params.get("dishName")
-  let ingredient = params.get("ingredient")
-
-  if(args === "dishName") {
+const nextPage = async (num, args) => {
+  try {
+    let url = document.URL
+    let params = new URL(url).searchParams
+    let dishName = params.get("dishName")
+    let ingredient = params.get("ingredient")
+    let searchResult
+    if(args === "dishName") {
     window.history.pushState("", "",  `/searchList.html?dishName=${dishName}&page=${num}`)
-    ajax("GET", "/api/1.0/search", `dishName=${dishName}&page=${num}`, {}, (result) => {
-      let results = JSON.parse(result)
-      if(results.error === "Invalid Search") {
-        return noResultRender()
-      } 
-      renderSearchResult(results, "dishName")
+
+    searchResult = await fetching(`/search?dishName=${dishName}&page=${num}`, "GET", {"Accept": "application/json"}, null)
+
+    if(!searchResult.error) {
+      renderSearchResult(searchResult, "dishName")
       let pages =getClass("page")
       for(let i = 0; i < pages.length; i++) {
         pages[i].style.backgroundColor = "rgb(255, 194, 80)"
       }
       pages[num%5].style.backgroundColor = "orangered"
-    })
+    } else {
+      noResultRender()
+    } 
   } else if(args === "ingredient") {
     window.history.pushState("", "",  `/searchList.html?ingredient=${ingredient}&page=${num}`)
-    ajax("GET", "/api/1.0/search", `ingredient=${ingredient}&page=${num}`, {}, (result) => {
-      let results = JSON.parse(result)
-      if(results.error === "Invalid Search") {
-        return noResultRender()
-      }
-      renderSearchResult(results, "ingredient")
+
+    searchResult = await fetching(`/search?ingredient=${ingredient}&page=${num}`, "GET", {"Accept": "application/json"}, null)
+
+    if(!searchResult.error) {
+      renderSearchResult(searchResult, "dishName")
       let pages =getClass("page")
       for(let i = 0; i < pages.length; i++) {
         pages[i].style.backgroundColor = "rgb(255, 194, 80)"
       }
       pages[num%5].style.backgroundColor = "orangered"
-    })
+    } else {
+      noResultRender()
+    } 
+
   } else {
-    console.log("bug")
+    console.log("Error")
+  }
+  } catch (err) {
+    console.log(err)
   }
 }
 
@@ -207,6 +214,9 @@ const nextPages = (num, args, totalPage) => {
  let pages =getClass("page")
  page.innerHTML = ""
  let newPages = parseInt(totalPage - num)
+ console.log(num)
+ console.log(totalPage)
+ console.log(newPages)
  createElement("div", {
   atrs: {
     className: "previousPages",
@@ -217,7 +227,7 @@ const nextPages = (num, args, totalPage) => {
   }, page)
   
  if(newPages > 4) {
-  for (let i=0; i < newPages; i++){
+  for (let i=0; i < num; i++){
     createElement("div", {
       atrs: {
         innerText: parseInt([i])+num+1,

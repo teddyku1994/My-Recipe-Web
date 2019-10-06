@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const axios = require('axios')
+const db = require('../db/dbConnect')
 const connection = require('./promiseFunc')
 const verification = require('../util/verification')
 const util = require('../util/util')
@@ -14,23 +15,38 @@ module.exports = {
       if(body.pw !== body.confirmPw || body.pw.length < 8){
         return util.error('Invalid Token')
       }
-      let sql = 'SELECT * FROM user WHERE email = ? AND provider = ?'
-      let emailExist = await connection.sqlQuery(sql, [body.email, 'native'], error)
-      if(emailExist.length > 0) {
-        return util.error('Email Taken')
-      }
-      let password = await bcrypt.hash(body.pw, 10)
-      let user = [body.email, password, body.name]
-      let sql2 = 'INSERT INTO user (email, password, name) VALUES (?)'
-      let result = await connection.sqlQuery(sql2, [user], error)
-      if (result.insertId) {
-        let token = verification.assignToken(result.insertId)
-        let accessToken = {
-          accessToken: token,
-        }
-        return accessToken
-      }
-      return util.error('Signup Failed')
+      return new Promise((resolve, reject) => {
+        db.pool.getConnection(async (error, con) => {
+          let err = error => {
+            reject(error)
+            return con.rollback(() => con.release())
+          }
+          con.beginTransaction(async (error) => {
+            try {
+              let sql = 'SELECT * FROM user WHERE email = ? AND provider = ?'
+              let emailExist = await connection.sqlQuery(sql, [body.email, 'native'], err)
+              if(emailExist.length > 0) {
+                return util.error('Email Taken')
+              }
+              let password = await bcrypt.hash(body.pw, 10)
+              let user = [body.email, password, body.name]
+              let sql2 = 'INSERT INTO user (email, password, name) VALUES (?)'
+              let result = await connection.sqlQuery(sql2, [user], err)
+              con.commit(error => {
+              if(error) return err(error)
+              let token = verification.assignToken(result.insertId)
+              let accessToken = {
+                accessToken: token,
+              }
+                resolve(accessToken)
+              })
+            } catch (err) {
+              con.rollback()
+              return util.error('Invalid Token')
+            }
+          })
+        })
+      })
     } catch (err) {
       console.log(err)
       return util.error('Invalid Token')

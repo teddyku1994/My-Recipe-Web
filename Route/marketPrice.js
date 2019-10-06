@@ -53,7 +53,7 @@ router.get('/marketPrice/tracelist', verification.verifyToken, async (req, res) 
     let error = error => console.log(error)
     let cacheResponse = await cache.getHashCache('userList', userId, error)
     if(cacheResponse) return res.json(cacheResponse)
-    let userTraceList = marketPrice.traceList(userId)
+    let userTraceList = await marketPrice.traceList(userId)
     return res.json(userTraceList)
   } catch (err) {
     console.log(err)

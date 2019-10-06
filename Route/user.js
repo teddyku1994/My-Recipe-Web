@@ -16,10 +16,14 @@ router.post('/user/verify', verification.verifyToken, async (req, res) => {
 })
 
 router.post('/user/signup', verification.verifyContentType, async (req,res) => {
-  let body = req.body
-  let error = error => console.log(error)
-  let accessToken = await user.signup(body, error)
-  res.json(accessToken)
+  try {
+    let body = req.body
+    let error = error => console.log(error)
+    let accessToken = await user.signup(body, error)
+    res.json(accessToken)
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 router.post('/user/signin', verification.verifyContentType, async (req, res) => {

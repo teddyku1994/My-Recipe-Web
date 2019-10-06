@@ -39,7 +39,7 @@ module.exports = {
           return greenPriceData
         }
         let greenPrice = await crawl.greenPriceCralwer(body.keywords)
-        if(!greenPrice) return res.json(util.error('No Result'))
+        if(!greenPrice) return (util.error('No Result'))
         greenPriceData = await priceExist(userId, greenPrice)
         await cache.createHashCache("greens", body.keywords, JSON.stringify(greenPrice))
         await cache.createHashCache("greens", greenPrice.data[0].title, JSON.stringify(greenPrice))
@@ -84,7 +84,7 @@ module.exports = {
   traceList: async (userId) => {
     try {
       let userList = await db.redis.hgetallAsync(userId)
-      if(!userList) return method(util.error('No Result'))
+      if(!userList) return util.error('No Result')
       let oldPrice = {}
       let newPrice = {}
       Object.keys(userList).map((data) => {
