@@ -45,6 +45,14 @@ const recipeSearch3 = () => {
   window.location = `/searchList.html?dishName=${dishName}&page=0`
 }
 
+if(search_txt) {
+  search_txt.addEventListener("keyup", (event) => {
+    if (event.keyCode === 13){
+      recipeSearch3()
+    }
+  })
+}
+
 let controller = new ScrollMagic.Controller();
 let scene = new ScrollMagic.Scene({
   triggerElement: '.search_boxTitle'

@@ -1,9 +1,124 @@
-const save = () => {
+const recipeRender = async () => { 
+
   let accessToken = localStorage.getItem("accessToken")
   let url = document.URL
   let params = new URL(url).searchParams
   let id = params.get("id")
-  body = {
+  if(!id) return window.location = "/index.html"
+  let body = {
+    status: "check",
+    recipeId: id
+  }
+
+  let render = (response) => {
+    let mainImageCon = getId("mainImageCon")
+    let con2 = getId('con2')
+    let con3 = getId('con3')
+    let url = document.URL
+    let metaURL = getId("metaURL")
+    let metaTitle = getId("metaTitle")
+    let metaDes = getId("metaDes")
+    let metaImg = getId("metaImg")
+    let upperbanner = getClass('upperbanner')[0]
+
+    upperbanner.innerText = response.data[0].title
+
+    createElement("img", {atrs: {
+      id: "mainImage",
+      src: response.data[0].mainImage
+    }}, mainImageCon)
+
+    for(let i = 0; i < response.data[0].ingredient.length; i++) {
+      createElement("div", {atrs: {
+        className: "ingredients"
+      }}, con2)
+      let ingredients = getClass("ingredients")[i]
+      createElement("div", {atrs: {
+        innerText: response.data[0].ingredient[i],
+        className: "ingredient"
+      }}, ingredients)
+      createElement("div", {atrs: {
+        innerText: response.data[0].amount[i],
+        className: "amount"
+      }}, ingredients)
+    }
+    for(let i = 0; i < response.data[0].step.length; i++) {
+      createElement("div", {atrs: {
+        className: "steps"
+      }}, con3)
+      let steps = getClass("steps")[i]
+      createElement("div", {atrs: {
+        className: "image"
+      }}, steps)
+      let image = getClass("image")[i]
+      createElement("img", {atrs: {
+        src: response.data[0].image[i],
+        alt: "Step Image"
+      }}, image)
+      createElement("div", {atrs: {
+        className: "stepCon"
+      }}, steps)
+      let stepCon = getClass("stepCon")[i]
+      createElement("div", {atrs: {
+        innerText: `STEP ${[i+1]}`,
+        className: "stepNum"
+      }}, stepCon)
+      createElement("div", {atrs: {
+        innerText: response.data[0].step[i],
+        className: "step"
+      }}, stepCon)
+    }
+    metaURL.content = url
+    metaDes.content = "My Recipe 提供眾多食譜讓您選不完"
+    metaTitle.content = `My Recipe ${response.data[0].title}的食譜`
+    metaImg.content = response.data[0].mainImage
+  }
+
+  let recipeData = await fetching(`/recipe?id=${parseInt(id)}`, "GET", {
+    "Accept": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  })  
+
+  if(!recipeData.error) {
+    render(recipeData)
+  } else {
+    window.location = "/index.html"
+  }
+
+  if(accessToken) {
+    let saveStatus = await fetching(`/user/favorite`, "POST", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`
+    }, JSON.stringify(body)) 
+    if(saveStatus.length <= 0 && !saveStatus.error) {
+      heart.style.display = "unset"
+      hearted.style.display = "none"
+    } else {
+      heart.style.display = "none"
+      hearted.style.display = "unset"
+    }
+    let LikeStatus = await fetching(`/user/like`, "POST", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${accessToken}`
+    }, JSON.stringify(body)) 
+    if(LikeStatus.length <= 0 && !saveStatus.error) {
+      liked.style.display  = "none"
+      like.style.display = "unset"
+    } else {
+      liked.style.display  = "unset"
+      like.style.display = "none"
+    }
+  }
+
+  await checkLike(id)
+}
+
+const save = async () => {
+  let accessToken = localStorage.getItem("accessToken")
+  let url = document.URL
+  let params = new URL(url).searchParams
+  let id = params.get("id")
+  let body = {
     status: "save",
     recipeId: id
   }
@@ -15,29 +130,25 @@ const save = () => {
     recipeMsg.className = "requireAcc"
     return
   }
-  
-  fetch("/api/1.0/user/favorite", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(!result.error){
-      heart.style.display = "none"
-      hearted.style.display = "unset"
-      return
-    }
-  }).catch((error) => {
-    // alert("系統錯誤")
-    console.log(error)
-  })
+
+  let saveStatus = await fetching("/user/favorite", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(saveStatus.error) {
+    recipeMsg.innerText = "收藏失敗"
+    recipeMsg.className = ""
+    recipeMsg.offsetWidth
+    recipeMsg.className = "requireAcc"
+    return
+  }
+
+  heart.style.display = "none"
+  hearted.style.display = "unset"
 }
 
-const unsave = () => {
+const unsave = async () => {
   let accessToken = localStorage.getItem("accessToken")
   let url = document.URL
   let params = new URL(url).searchParams
@@ -55,27 +166,24 @@ const unsave = () => {
     return
   }
 
-  fetch("/api/1.0/user/favorite", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(!result.error){
-      hearted.style.display = "none"
-      heart.style.display = "unset"
-      return
-    }
-  }).catch((error) => {
-    alert("系統錯誤")
-  })
+  let unsaveStatus = await fetching("/user/favorite", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(unsaveStatus.error) {
+    recipeMsg.innerText = "取消收藏失敗"
+    recipeMsg.className = ""
+    recipeMsg.offsetWidth
+    recipeMsg.className = "requireAcc"
+    return
+  }
+
+  hearted.style.display = "none"
+  heart.style.display = "unset"
 }
 
-const thumb = () => {
+const thumb = async () => {
 
   let accessToken = localStorage.getItem("accessToken")
   let url = document.URL
@@ -95,29 +203,25 @@ const thumb = () => {
     return
   }
 
-  fetch("/api/1.0/user/like", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    console.log(result)
-    if(!result.error){
-      like.style.display = "none"
-      liked.style.display = "unset"
-      checkLike(id)
-      return
-    }
-  }).catch((error) => {
-    alert("系統錯誤")
-  })
+  let likeStatus = await fetching("/user/like", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(likeStatus.error) {
+    recipeMsg.innerText = "操作失敗"
+    recipeMsg.className = ""
+    recipeMsg.offsetWidth
+    recipeMsg.className = "requireAcc"
+    return
+  }
+
+  like.style.display = "none"
+  liked.style.display = "unset"
+  await checkLike(id)
 }
 
-const thumbed = () => {
+const thumbed = async () => {
   let accessToken = localStorage.getItem("accessToken")
   let url = document.URL
   let params = new URL(url).searchParams
@@ -135,178 +239,39 @@ const thumbed = () => {
     return
   }
 
-  fetch("/api/1.0/user/like", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    if(!result.error){
-      liked.style.display  = "none"
-      like.style.display = "unset"
-      checkLike(id)
-      return
-    }
-  }).catch((error) => {
-    alert("系統錯誤")
-  })
+  let unlikeStatus = await fetching("/user/like", "POST", {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`
+  }, JSON.stringify(body))
+
+  if(unlikeStatus.error) {
+    recipeMsg.innerText = "操作失敗"
+    recipeMsg.className = ""
+    recipeMsg.offsetWidth
+    recipeMsg.className = "requireAcc"
+    return
+  }
+
+  liked.style.display  = "none"
+  like.style.display = "unset"
+  await checkLike(id)
 }
 
-const recipeRender = () => { 
-
-  let accessToken = localStorage.getItem("accessToken")
-  let url = document.URL
-  let params = new URL(url).searchParams
-  let id = params.get("id")
-  if(!id) return window.location = "/index.html"
-  body = {
-    status: "check",
-    recipeId: id
-  }
-  
-  ajax("GET", "/api/1.0/recipe", `id=${parseInt(id)}`, {}, (result) => {
-    let results = JSON.parse(result)
-    render(results)
-  })
-
-  checkLike(id)
-
-  if(accessToken) {
-    fetch("/api/1.0/user/favorite", {
-      method:"POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(body)
-    }).then((result) => {
-      return (result.json())
-    }).then((result) => {
-      if(result.length <= 0){
-        heart.style.display = "unset"
-        hearted.style.display = "none"
-        return
-      }
-      heart.style.display = "none"
-      hearted.style.display = "unset"
-      return
-    }).catch((error) => {
-      // alert("系統錯誤")
-    })
-
-    fetch("/api/1.0/user/like", {
-      method:"POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(body)
-    }).then((result) => {
-      return (result.json())
-    }).then((result) => {
-      if(result.length <= 0){
-        liked.style.display  = "none"
-        like.style.display = "unset"
-        return
-      }
-      liked.style.display  = "unset"
-      like.style.display = "none"
-      return
-    }).catch((error) => {
-      console.log(error)
-      // alert("系統錯誤")
-    })
+const checkLike = async (recipeId) => {
+  console.log(recipeId)
+  let body = {
+    recipeId: recipeId
   }
 
-  let render = (response) => {
-    let mainImageCon = getId("mainImageCon")
-    let con2 = getId('con2')
-    let con3 = getId('con3')
-    let url = document.URL
-    let metaURL = getId("metaURL")
-    let metaTitle = getId("metaTitle")
-    let metaDes = getId("metaDes")
-    let metaImg = getId("metaImg")
-    let upperbanner = document.getElementsByClassName('upperbanner')[0]
+  let likeCount = await fetching(`/recipe/like`, "POST", {
+    "Content-Type": "application/json"
+  }, JSON.stringify(body)) 
 
-    upperbanner.innerText = response.data[0].title
-
-    createElement("img", {atrs: {
-      id: "mainImage",
-      src: response.data[0].mainImage
-    }}, mainImageCon)
-
-    for(let i = 0; i < response.data[0].ingredient.length; i++) {
-      createElement("div", {atrs: {
-        className: "ingredients"
-      }}, con2)
-      let ingredients = document.getElementsByClassName("ingredients")[i]
-      createElement("div", {atrs: {
-        innerText: response.data[0].ingredient[i],
-        className: "ingredient"
-      }}, ingredients)
-      createElement("div", {atrs: {
-        innerText: response.data[0].amount[i],
-        className: "amount"
-      }}, ingredients)
-    }
-    for(let i = 0; i < response.data[0].step.length; i++) {
-      createElement("div", {atrs: {
-        className: "steps"
-      }}, con3)
-      let steps = document.getElementsByClassName("steps")[i]
-      createElement("div", {atrs: {
-        className: "image"
-      }}, steps)
-      let image = document.getElementsByClassName("image")[i]
-      createElement("img", {atrs: {
-        src: response.data[0].image[i],
-        alt: "Step Image"
-      }}, image)
-      createElement("div", {atrs: {
-        className: "stepCon"
-      }}, steps)
-      let stepCon = document.getElementsByClassName("stepCon")[i]
-      createElement("div", {atrs: {
-        innerText: `STEP ${[i+1]}`,
-        className: "stepNum"
-      }}, stepCon)
-      createElement("div", {atrs: {
-        innerText: response.data[0].step[i],
-        className: "step"
-      }}, stepCon)
-    }
-    metaURL.content = url
-    metaDes.content = "My Recipe 提供眾多食譜讓您選不完"
-    metaTitle.content = `My Recipe ${response.data[0].title}的食譜`
-    metaImg.content = response.data[0].mainImage
+  if(likeCount > 0){
+    likeAmount.innerText = `(${likeCount})`
+  } else {
+    likeAmount.innerText = "(0)"
   }
-}
-
-const checkLike = (recipeId) => {
-  fetch("/api/1.0/recipe/like", {
-    method:"POST",
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify(body)
-  }).then((result) => {
-    return (result.json())
-  }).then((result) => {
-    console.log(result)
-    if(result > 0){
-      likeAmount.innerText = `(${result})`
-    } else {
-      likeAmount.innerText = "(0)"
-    }
-  }).catch((error) => {
-    console.log(error)
-    // alert("系統錯誤")
-  })
 }
 
 const share = () => {
@@ -327,12 +292,4 @@ if(fbShare) {
   let url = document.URL
   let shareLink = getId("shareLink")
   shareLink.href = `http://www.facebook.com/share.php?u=${url}`
-}
-
-if(search_txt) {
-  search_txt.addEventListener("keyup", (event) => {
-    if (event.keyCode === 13){
-      recipeSearch3()
-    }
-  })
 }

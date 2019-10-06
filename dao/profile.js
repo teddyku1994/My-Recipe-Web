@@ -64,18 +64,22 @@ module.exports = {
     if(body.ingredient.length !== body.amount.length || body.steps.length !== images.length || !mainImg || !body.title || !body.ingredient || !body.steps) {
       return util.error('Invalid Token')
     }
+
     return new Promise((resolve, reject) => {
       mainImg[0].location.includes('https://myrecipsebucket.s3.amazonaws.com') ?
       mainImg = mainImg[0].location.replace('https://myrecipsebucket.s3.amazonaws.com', '')
       : mainImg = mainImg[0].location.replace('https://myrecipsebucket.s3.us-east-2.amazonaws.com', '')
+
       let ingredient = body.ingredient.join(',')
       let amount = body.amount.join(',')
       let steps =  body.steps
       let method = []
+
       steps.map(items => method.push([items]))
       for(let i = 0; i < images.length; i++) {
         method[i].push(images[i].location.replace('https://myrecipsebucket.s3.amazonaws.com', ''))
       }
+      
       db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
@@ -148,6 +152,7 @@ module.exports = {
       let amount = body.amount.join(',')
       let steps =  body.steps
       let method = []
+
       steps.map(items => method.push([items]))
       for(let i = 0; i < image.length; i++) {
         if(image[i].includes('https://d1lpqhjzd6rmjw.cloudfront.net')) {
@@ -158,6 +163,7 @@ module.exports = {
           method[i].push(image[i])
         }
       }
+
       db.pool.getConnection((error, con) => {
         con.beginTransaction((error) => {
           if(error) {
