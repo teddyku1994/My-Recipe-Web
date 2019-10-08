@@ -48,7 +48,6 @@ function checkLoginState() {
       console.log("Login Failed")
     }).catch((error) => {
       console.log(error)
-      // alert("系統錯誤")
     })
 
     const fbSignin = (data) => {

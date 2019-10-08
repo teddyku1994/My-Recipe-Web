@@ -415,7 +415,7 @@ const renderMemberFav = async (page) => {
     "Authorization": `Bearer ${accessToken}`
   }, JSON.stringify(body))
 
-  if(!userFavList.error) {
+  if(!userFavList.error || userFavList.error === "No Result") {
     render(userFavList) 
   } else {
     console.log(userFavList)

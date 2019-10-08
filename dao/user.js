@@ -79,7 +79,7 @@ module.exports = {
         if(accountExist.length > 0) {
           let sql = 'UPDATE user SET email = ? WHERE id = ?'
           await connection.sqlQuery(sql, [userData.email, accountExist[0].id], error)
-          let token = verification.assignToken(accountExist.id)
+          let token = verification.assignToken(accountExist[0].id)
           let userInfo = {
             accessToken: token,
             dp: userData.picture.data.url
@@ -117,7 +117,6 @@ module.exports = {
       newPw = await bcrypt.hash(newPw, 10)
       let sql2 = `UPDATE user SET password = ? WHERE id = ?`
       let result2 = await connection.sqlQuery(sql2, [newPw, userId], error)
-      console.log(result2)
       if(result2.affectedRows === 1) return {status:"Success"}
       return util.error("Invalid Token")
     } catch (err) {

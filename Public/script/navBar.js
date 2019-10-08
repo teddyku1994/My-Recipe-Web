@@ -496,6 +496,7 @@ const login = async () => {
   }
 
   let result = await fetching("/user/signin", "POST", {"Content-Type": "application/json"}, JSON.stringify(body))
+  console.log(result)
   let url = window.location.href
   if(result.error === "All fields required") return errorMsg("請輸入所有欄位", "signin")
   if(result.error === "Invalid Token") return errorMsg("帳號/密碼錯誤", "signin")

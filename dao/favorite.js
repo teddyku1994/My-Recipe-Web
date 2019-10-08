@@ -38,7 +38,7 @@ module.exports = {
       let params = [userId, limit, offset]
       let favList = await connection.sqlQuery(sql, params, error)
       data.data = favList
-      if(favList.length === 0) return util.error('Invalid userId')
+      if(favList.length === 0) return util.error('No Result')
       let sql2 = 'SELECT COUNT(*) FROM favorite WHERE user_id = ?'
       let total = await connection.sqlQuery(sql2, userId, error)
       let totalPage = total[0]['COUNT(*)']
