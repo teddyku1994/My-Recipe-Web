@@ -18,7 +18,6 @@ module.exports = {
     }
   },
   errorHandling: (error, res) => {
-    console.log("errorHandling",error)
     if(error instanceof TypeError) {
       console.log("TypeError", error)
       res.status(400).json(err('Bad Request'))
@@ -34,8 +33,8 @@ module.exports = {
     } else if(error.Error === "ER_BAD_FIELD_ERROR") {
       console.log("ER_BAD_FIELD_ERROR", error)
       res.status(400).json(err('Bad Request'))
-    } else if(error.Error.code) {
-      console.log("MySQL Error", error.Error.code)
+    } else if(error.Error === "ER_PARSE_ERROR") {
+      console.log("ER_PARSE_ERROR", error)
       res.status(400).json(err('Bad Request'))
     } else {
       console.log("Others", error)
