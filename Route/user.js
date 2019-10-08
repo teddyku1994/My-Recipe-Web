@@ -30,7 +30,7 @@ router.post('/user/signin', verification.verifyContentType, async (req, res) => 
     let body = req.body
     let error = error => console.log(error)
     let token = await user.signin(body, error)
-    if(!token.error) res.json(token)
+    res.json(token)
   } catch (err) {
     util.errorHandling(err, res)
   }
