@@ -44,9 +44,7 @@ function checkLoginState() {
     }).then((result) => {
       return (result.json())
     }).then((result) => {
-      if(result.accessToken) {
-        return fbSignin(result)
-      }
+      if(result.accessToken) return fbSignin(result)
       console.log("Login Failed")
     }).catch((error) => {
       console.log(error)
@@ -54,11 +52,10 @@ function checkLoginState() {
     })
 
     const fbSignin = (data) => {
-      
+      let url = window.location.href
       localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("exp", data.exp);
       if(data.dp) localStorage.setItem("dp", data.dp)
-      return document.location.assign('/index.html');
+      return window.location = url
   }
 
   });
