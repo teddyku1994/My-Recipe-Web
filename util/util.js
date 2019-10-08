@@ -34,8 +34,8 @@ module.exports = {
     } else if(error.Error === "ER_BAD_FIELD_ERROR") {
       console.log("ER_BAD_FIELD_ERROR", error)
       res.status(400).json(err('Bad Request'))
-    } else if(error.Error === "ER_BAD_FIELD_ERROR") {
-      console.log("ER_BAD_FIELD_ERROR", error)
+    } else if(error.Error.code) {
+      console.log("MySQL Error", error.Error.code)
       res.status(400).json(err('Bad Request'))
     } else {
       console.log("Others", error)

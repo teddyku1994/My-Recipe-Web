@@ -44,11 +44,10 @@ function checkLoginState() {
     }).then((result) => {
       return (result.json())
     }).then((result) => {
-      if(result.exp && result.accessToken) {
+      if(result.accessToken) {
         return fbSignin(result)
       }
-      console.log(result)
-      // return alert("系統錯誤")
+      console.log("Login Failed")
     }).catch((error) => {
       console.log(error)
       // alert("系統錯誤")
