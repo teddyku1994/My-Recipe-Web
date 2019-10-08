@@ -6,7 +6,6 @@ const Search = async () => {
   let hotWords = await fetching("/search/hotKeywords", "GET", {"Content-Type": "application/json"})
 
   let render = (response) => {
-    console.log(response)
     response.map((item) => {
       if(item.category === "dishName") {
         createElement("a", {atrs: {

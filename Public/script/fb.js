@@ -44,22 +44,18 @@ function checkLoginState() {
     }).then((result) => {
       return (result.json())
     }).then((result) => {
-      if(result.exp && result.accessToken) {
-        return fbSignin(result)
-      }
-      console.log(result)
-      // return alert("系統錯誤")
+      if(result.accessToken) return fbSignin(result)
+      console.log("Login Failed")
     }).catch((error) => {
       console.log(error)
       // alert("系統錯誤")
     })
 
     const fbSignin = (data) => {
-      
+      let url = window.location.href
       localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("exp", data.exp);
       if(data.dp) localStorage.setItem("dp", data.dp)
-      return document.location.assign('/index.html');
+      return window.location = url
   }
 
   });
