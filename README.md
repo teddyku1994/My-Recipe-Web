@@ -6,10 +6,16 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 
 - [Technologies](##Technologies)
 - [Architecture](##Architecture)
-- [Database Schema](#Database-Schema)
-- [Main Features](#Main-Features)
-- [Features Demo](#Features-Demo)
-- [Contact](#Contact)
+- [Database Schema](##Database-Schema)
+- [Main Features](##Main-Features)
+- [Features Demo](##Features-Demo)
+ - [Home Page](###Home-Page)
+ - [Recipe Search](###Recipe Search)
+ - [Nutrient Level Search](###Nutrient-Level-Search)
+ - [Vegetable & Fruit Price Search](###Vegetable-&-Fruit-Price-Search)
+ - [User Recipes Management](###User-Recipes-Management)
+ - [User Basic Functions](###User-Basic-Functions)
+- [Contact](##Contact)
 
 ## Technologies
 
