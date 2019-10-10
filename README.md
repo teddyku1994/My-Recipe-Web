@@ -78,15 +78,18 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 
 ### Home Page
 
-![](https://media.giphy.com/media/WO5X5r76TLs1iyRbxO/giphy.gif =800x)
-
+<p align="center">
+ <img "https://media.giphy.com/media/WO5X5r76TLs1iyRbxO/giphy.gif" width="800">
+</p>
 
 - Popular recipes are stored in cache (TTL 6hrs) and updated periodically through fetching most liked recipes from databse
 - Quick search function using dish name
 
 ### Recipe Search 
 
-![](https://media.giphy.com/media/QAVQIyXGRBZN4noIFY/giphy.gif =1000x)
+<p align="center">
+ <img "https://media.giphy.com/media/QAVQIyXGRBZN4noIFY/giphy.gif" width="800">
+</p>
 
 - Refer to [Architecture](#Architecture) for Dish Name Search & Ingredients Search process
 - Database will grow as more users search for different dishes
@@ -95,14 +98,16 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ### Nutrient Level Search
 
 <p align="center">
- <img align="center" src="https://media.giphy.com/media/KgEetveyiHnFbquKMo/giphy.gif" width="800">
+ <img src="https://media.giphy.com/media/KgEetveyiHnFbquKMo/giphy.gif" width="800">
 </p>
 
 - Select 10 most relevant result from 2000+ data and renders nutrient detail on click
 
 ### Vegetable & Fruit Price Search
 
-![](https://media.giphy.com/media/XEDaZIAA61zZzEOrZC/giphy.gif =1000x)
+<p align="center">
+ <img "https://media.giphy.com/media/XEDaZIAA61zZzEOrZC/giphy.gif" width="800">
+</p>
 
 - Member only function
 - Upon search the application will crawl for wholesale, retail price and relevent result of the searched item and store in Redis
@@ -111,7 +116,9 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 
 ### User Recipes Management
 
-![](https://media.giphy.com/media/S598OCviyC38Ppi3W7/giphy.gif =1000x)
+<p align="center">
+ <img "https://media.giphy.com/media/S598OCviyC38Ppi3W7/giphy.gif" width="800">
+</p>
 
 - Users can upload / update and delete recipes through profile
 - Images of recipes are uploaded to AWS S3 and read through AWS CloudFront to optimise load speed
