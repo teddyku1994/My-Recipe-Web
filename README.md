@@ -104,6 +104,8 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 - Database will grow as more users search for different dishes
 - Hot Keywords are rendered by selecting the top 6 most searched keywords recorded in database
 
+---
+
 ### Nutrient Level Search
 
 <p align="center">
@@ -111,6 +113,8 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 </p>
 
 - Select 10 most relevant result from 2000+ data and renders nutrient detail on click
+
+---
 
 ### Vegetable & Fruit Price Search
 
@@ -123,6 +127,8 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 - Users can choose to add items into trace list and the application will update and compare the prices weekly
 - This function uses Redis as database, because information are regularly updated (optimize efficiency)
 
+---
+
 ### User Recipes Management
 
 <p align="center">
@@ -131,6 +137,8 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 
 - Users can upload / update and delete recipes through profile
 - Images of recipes are uploaded to AWS S3 and read through AWS CloudFront to optimise load speed
+
+---
 
 ### User Basic Functions
 
