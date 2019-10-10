@@ -1,4 +1,4 @@
-const connection = require('../dao/promiseFunc')
+const connection = require('../Model/promiseFunc')
 const db = require('../db/dbConnect')
 const util = require('../util/util')
 

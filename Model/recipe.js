@@ -1,6 +1,6 @@
-const connection = require('../dao/promiseFunc')
+const connection = require('../Model/promiseFunc')
 const crawlRecipe = require('../util/crawl')
-const crawl = require('../dao/crawl')
+const crawl = require('../Model/crawl')
 const util = require ('../util/util')
 
 module.exports = {
