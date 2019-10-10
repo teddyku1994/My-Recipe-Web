@@ -92,6 +92,8 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 - Popular recipes are stored in cache (TTL 6hrs) and updated periodically through fetching most liked recipes from databse
 - Quick search function using dish name
 
+**
+
 ### Recipe Search 
 
 <p align="center">
