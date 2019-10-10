@@ -94,7 +94,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 
 ### Nutrient Level Search
 
-![](https://media.giphy.com/media/KgEetveyiHnFbquKMo/giphy.gif =1000x)
+<img src="https://media.giphy.com/media/KgEetveyiHnFbquKMo/giphy.gif" width="1000">
 
 - Select 10 most relevant result from 2000+ data and renders nutrient detail on click
 
