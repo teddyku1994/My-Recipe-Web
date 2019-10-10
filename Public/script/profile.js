@@ -396,7 +396,7 @@ const renderMemberFav = async (page) => {
       }
     }
     if(response.totalPage){
-      for (let i=0; i <= response.totalPage; i++){
+      for (let i=0; i < response.totalPage; i++){
         createElement("div", {
           atrs: {
             innerText: parseInt([i])+1,
@@ -450,7 +450,6 @@ const editFavorite = async () => {
         if(removedFav.status === "Success") {
           removed.parentNode.removeChild(removed)
         } else {
-          console.log(removedFav)
           feedback("刪除失敗", "error")
         }
       })

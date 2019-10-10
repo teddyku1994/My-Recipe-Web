@@ -17,6 +17,15 @@ module.exports = {
       data.totalPage = Math.floor(totalPage/limit)
     }
   },
+  paging2:(limit, totalPage, page, data) => {
+    let newLimit = (page+1)*limit
+    if(totalPage - newLimit > 0) {
+      data.page = page+1
+    }
+    if(Math.floor(totalPage/limit) > 0 && totalPage > limit) {
+      data.totalPage = Math.ceil(totalPage/limit)
+    }
+  },
   errorHandling: (error, res) => {
     if(error instanceof TypeError) {
       console.log("TypeError", error)
