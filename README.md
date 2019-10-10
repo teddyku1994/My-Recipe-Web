@@ -79,7 +79,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ### Home Page
 
 <p align="center">
- <img "https://media.giphy.com/media/WO5X5r76TLs1iyRbxO/giphy.gif" width="800">
+ <img src="https://media.giphy.com/media/WO5X5r76TLs1iyRbxO/giphy.gif" width="800">
 </p>
 
 - Popular recipes are stored in cache (TTL 6hrs) and updated periodically through fetching most liked recipes from databse
@@ -88,7 +88,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ### Recipe Search 
 
 <p align="center">
- <img "https://media.giphy.com/media/QAVQIyXGRBZN4noIFY/giphy.gif" width="800">
+ <img src="https://media.giphy.com/media/QAVQIyXGRBZN4noIFY/giphy.gif" width="800">
 </p>
 
 - Refer to [Architecture](#Architecture) for Dish Name Search & Ingredients Search process
@@ -106,7 +106,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ### Vegetable & Fruit Price Search
 
 <p align="center">
- <img "https://media.giphy.com/media/XEDaZIAA61zZzEOrZC/giphy.gif" width="800">
+ <img src="https://media.giphy.com/media/XEDaZIAA61zZzEOrZC/giphy.gif" width="800">
 </p>
 
 - Member only function
@@ -117,7 +117,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ### User Recipes Management
 
 <p align="center">
- <img "https://media.giphy.com/media/S598OCviyC38Ppi3W7/giphy.gif" width="800">
+ <img src="https://media.giphy.com/media/S598OCviyC38Ppi3W7/giphy.gif" width="800">
 </p>
 
 - Users can upload / update and delete recipes through profile
