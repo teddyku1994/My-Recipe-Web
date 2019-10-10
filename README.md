@@ -51,7 +51,11 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 - Git / GitHub
 
 ## Architecture 
-![](https://i.imgur.com/ijASQQV.png)
+
+<p align="center">
+ <img src="https://i.imgur.com/ijASQQV.png" width="800">
+</p>
+
 - NGINX redirects 443 port requests from clients to corresponding ports
 - Result searching process:
     - Search Redis (cache) for matching result and return the result if found
@@ -59,7 +63,10 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
     - **If no** matching result in MySQL DB, the app will trigger web crawling and return the found result after storing it into the database.
 
 ## Database Schema
-![](https://i.imgur.com/Homs37X.png)
+
+<p align="center">
+ <img src="https://i.imgur.com/Homs37X.png" width="800">
+</p>
 
 ## Main Features
 - Recipe Search
