@@ -35,7 +35,6 @@ router.post('/search', verification.verifyContentType, async (req, res) => {
     let body = req.body
     let error = error => console.log(error)
     let result = await recipe.searchRecords(body, error)
-    console.log(result)
     res.json(result)
   } catch (err) {
     util.errorHandling(err, res)
