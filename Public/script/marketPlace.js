@@ -195,11 +195,11 @@ const priceList = async () => {
     "Authorization": `Bearer ${accessToken}`
   })
 
-  console.log(userTraceList)
-
   if(!userTraceList.error && userTraceList.data) {
     priceListRender(userTraceList)
-  } else {
+  } else if (userTraceList.error === "No Result") {
+    priceListRender(userTraceList)
+  } else{
     console.log(userTraceList)
   }
 }
