@@ -1,7 +1,7 @@
-const crawl = require('../dao/crawl')
+const crawl = require('../Model/crawl')
 const axios = require('axios')
 const cheerio = require('cheerio')
-const promise = require('../dao/promiseFunc')
+const promise = require('../Model/promiseFunc')
 
 const removeEmojis = (str) => {
   if(!str) return ''

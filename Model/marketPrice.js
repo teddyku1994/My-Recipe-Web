@@ -1,7 +1,7 @@
 const db = require('../db/dbConnect')
 const util = require('../util/util')
 const crawl = require('../util/crawl')
-const cache = require('../dao/cache')
+const cache = require('./cache')
 
 const traceListSingle = async (userId, keyword) => {
   try {

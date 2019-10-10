@@ -1,7 +1,7 @@
 const schedule = require('node-schedule');
-const recipe = require('../dao/recipe');
+const recipe = require('../Model/recipe');
 const crawl = require('../util/crawl')
-const mysql = require('../dao/promiseFunc')
+const mysql = require('../Model/promiseFunc')
 const db = require('../db/dbConnect')
 
 module.exports = {

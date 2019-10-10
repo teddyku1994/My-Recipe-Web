@@ -1,6 +1,6 @@
 const express = require('express')
-const cache = require('../dao/cache')
-const marketPrice = require('../dao/marketPrice')
+const cache = require('../Model/cache')
+const marketPrice = require('../Model/marketPrice')
 const verification = require('../util/verification')
 const router = express.Router()
 

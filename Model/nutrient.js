@@ -1,4 +1,4 @@
-const connection = require('../dao/promiseFunc')
+const connection = require('../Model/promiseFunc')
 
 module.exports = {
   nutrientSearch: async (keyword, error) => {
