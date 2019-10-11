@@ -59,7 +59,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 ## Architecture 
 
 <p align="center">
- <img src="https://i.imgur.com/ijASQQV.png" width="800">
+ <img src="https://i.imgur.com/v1YoD8u.png" width="800">
 </p>
 
 - NGINX redirects 443 port requests from clients to corresponding ports
