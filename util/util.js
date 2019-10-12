@@ -39,12 +39,9 @@ module.exports = {
     } else if (error instanceof ReferenceError) {
       console.log("ReferenceError", error)
       res.status(400).json(err('Bad Request'))
-    } else if(error.Error === "ER_BAD_FIELD_ERROR") {
-      console.log("ER_BAD_FIELD_ERROR", error)
-      res.status(400).json(err('Bad Request'))
-    } else if(error.Error === "ER_PARSE_ERROR") {
-      console.log("ER_PARSE_ERROR", error)
-      res.status(400).json(err('Bad Request'))
+    } else if(error.Error === "ER_BAD_FIELD_ERROR" || error.Error === "ER_PARSE_ERROR") {
+      console.log("DB Error", error)
+      res.status(400).json(err('Database Error'))
     } else {
       console.log("Others", error)
       res.status(500).json(err('Internal Server Error'))

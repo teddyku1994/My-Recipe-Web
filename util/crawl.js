@@ -88,7 +88,7 @@ module.exports = {
           console.log("Duplicate")
         }
       }
-      console.log('All Done')
+      return 'All Done'
 
     } catch (err) {
       console.log(err)

@@ -39,10 +39,13 @@ module.exports = {
   },
   listByDishName: async (dishName, limit, page, error) => {
     try {
+      dishName = dishName.replace(' ','')
       let data = {}
       let offset = page*limit
+
       let sql = `SELECT * FROM recipe WHERE title LIKE ? LIMIT ? OFFSET ?`
       let recipes = await connection.sqlQuery(sql, [`%${dishName}%`, limit, offset], error)
+      
       if(recipes.length < 3 && page === 0) {
         await crawlRecipe.recipeCrawler(dishName)
         return crawl.renderCrawlResult(dishName, limit, 0, error)
@@ -54,6 +57,7 @@ module.exports = {
             recipes[i].image = `https://d1lpqhjzd6rmjw.cloudfront.net${result[i].image}`
           }
         }
+        
         data.data = recipes
         let totalPage = total[0]['COUNT(*)']
         util.paging(limit, totalPage, page, data)
