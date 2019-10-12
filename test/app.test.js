@@ -1,6 +1,9 @@
-let user = require('../Model/user')
-let recipe = require('../Model/recipe')
-let crawler = require('../util/crawl')
+const user = require('../Model/user')
+const recipe = require('../Model/recipe')
+const connection = require('../Model/promiseFunc')
+const crawler = require('../util/crawl')
+const axios = require('axios')
+jest.mock('axios')
 
 test('recipe search by Dish name test', async () => {
   let error = err => console.log(err)
@@ -99,4 +102,41 @@ test('greenPriceCralwer will return complete message upon completion else return
   expect(Array.isArray(response2.data[0].otherLinks)).toBe(true)
 
   expect(response3).toBe(null)
+})
+
+test('MySQL connection promise function test', () => {
+  let cb = res => console.log(res)
+  let validQuery = 'SELECT * FROM recipe WHERE id = ?'
+  let InvalidQuery ='SELECTT * FROM recipe WHERE id = ?'
+  expect(connection.sqlQuery(validQuery, 123, cb)).resolves.toBeTruthy()
+  return expect(connection.sqlQuery(InvalidQuery, 123, cb)).rejects.toThrowError(/error/)
+})
+
+test('test facebook sign in', () => {
+  let error = err => console.log(err)
+
+  let validUser = {
+    provider: 'facebook',
+    email: 'test@test.com',
+  }
+
+  let fbUserData = {
+    name: 'testAcc',
+    email: 'test@test.com',
+    picture: {
+      data: {
+        url: 'https://testimage.com'
+      }
+    }
+  }
+
+  let res = {data: fbUserData}
+
+  axios.mockResolvedValue(res)
+
+  return user.signin(validUser, error).then(data => {
+    expect(data).toHaveProperty('accessToken')
+    expect(data).not.toHaveProperty('accessToken', null)
+    expect(data).toHaveProperty('dp', 'https://testimage.com')
+  })
 })
