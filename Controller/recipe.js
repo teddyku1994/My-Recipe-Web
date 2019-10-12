@@ -15,7 +15,6 @@ router.get('/search', async (req, res) => {
     if(isNaN(page)) res.json(util.error('Invalid Search'))
     
     if(dishName) {
-      dishName = dishName.replace(' ','')
       let result = await recipe.listByDishName(dishName, 6, page, error)
       res.json(result)
     } else if(ingredient) {

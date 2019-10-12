@@ -53,7 +53,6 @@ module.exports = {
   signin: async (body, error) => {
     try {
       if(body.provider === "native") {
-        console.log('native')
         if(!body.email||!body.pw||!body.provider) {
           return error.util('All fields required')
         }
