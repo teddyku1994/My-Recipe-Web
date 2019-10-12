@@ -131,6 +131,7 @@ My Recipe aims to be more than an regular receipe searching website, but a websi
 - Member only function
 - Upon search the application will crawl for wholesale, retail price and relevent result of the searched item and store in Redis
 - Users can choose to add items into trace list and the application will update and compare the prices weekly
+- Update schedules are achieved thorugh utilizing node-schedule module
 - This function uses Redis as database, because information are regularly updated (optimize efficiency)
 
 ---
