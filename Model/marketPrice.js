@@ -5,10 +5,10 @@ const cache = require('./cache')
 
 const traceListSingle = async (userId, keyword) => {
   try {
-    let userList = await db.redis.hgetallAsync(userId)
-    if(!userList) return util.error('No Result')
-    let keylist = Object.keys(userList)
     let exist = 0
+    let userList = await db.redis.hgetallAsync(userId)
+    if(!userList) return exist = 0
+    let keylist = Object.keys(userList)
     keylist.indexOf(keyword) === -1 ? null : exist += 1
     return exist
   } catch(err) {

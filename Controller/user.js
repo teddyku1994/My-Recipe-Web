@@ -40,10 +40,10 @@ router.post('/user/profile', verification.verifyContentType, verification.verify
   try {
     let error = error => console.log(error)
     let body = req.body
-    if(body.search === 'basicInfo') {
+    if(body.status === 'basicInfo') {
       let basicInfo = await profile.getInfo(req.userId, error)
       res.json(basicInfo)
-    } else if(body.search === 'favInfo') {
+    } else if(body.status === 'favInfo') {
       let favInfo = await favorite.list(req.userId, 4, body.page, error)
       res.json(favInfo)
     } else {
@@ -112,11 +112,9 @@ router.post('/user/recipe', verification.verifyContentType, verification.verifyT
   
     if(status === "list"){
       let recipeList = await profile.listRecipe(userId, error)
-      console.log(recipeList)
       return res.json(recipeList)
     } else if(status === "update"){
       let userRecipe = await profile.userRecipe(userId, body.recipeId, error)
-      console.log(userRecipe)
       res.json(userRecipe)
     } else {
       res.json(util.error('Invalid Method'))

@@ -44,6 +44,7 @@ router.get('/search/hotKeywords', verification.verifyContentType, async (req, re
   try {
     let error = error => console.log(error)
     let cacheResponse = await cache.getSetCache('hotKeywords', error)
+    console.log(cacheResponse)
     if(cacheResponse) return res.json(cacheResponse)
     let hotKeywords = await recipe.listHotKeywords(6, error)
     await cache.createSetCache('hotKeywords', 3600, JSON.stringify(hotKeywords), error)

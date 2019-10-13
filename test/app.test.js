@@ -112,7 +112,7 @@ test('MySQL connection promise function test', () => {
   return expect(connection.sqlQuery(InvalidQuery, 123, cb)).rejects.toThrowError(/error/)
 })
 
-test('test facebook sign in', () => {
+test('test facebook sign in using mock', () => {
   let error = err => console.log(err)
 
   let validUser = {

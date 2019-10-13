@@ -16,7 +16,7 @@ const renderProfile = async () => {
   let accessToken = localStorage.getItem("accessToken")
   let con2 = getId("con2")
   let body = {
-    search: "basicInfo"
+    status: "basicInfo"
   }
 
   if(!accessToken) return window.location = "/index.html"
@@ -343,7 +343,7 @@ const renderMemberFav = async (page) => {
 
   let accessToken = localStorage.getItem("accessToken")
   let body = {
-    search: "favInfo",
+    status: "favInfo",
     page: page
   }
 
