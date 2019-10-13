@@ -109,43 +109,45 @@ bookncode.com
 * `User Profile Object`
 
   * `Basic Info Object`
-| Field | Type | Description |
-| :---: | :---: | :--- |
-| id | Number | User id |
-| name | String | Name of user |
-| email | String | User email |
-| image | Number | Profile display picture |
+
+  | Field | Type | Description |
+  | :---: | :---: | :--- |
+  | id | Number | User id |
+  | name | String | Name of user |
+  | email | String | User email |
+  | image | Number | Profile display picture |
 
   * `User Favorites Object`
-| Field | Type | Description |
-| :---: | :---: | :--- |
-| id | Number | Recipe id |
-| title | String | Recipe title |
-| image | String | Recipe image |
-| page | Number | Next page number |
-| totalPage | Number | Total pages |
+
+  | Field | Type | Description |
+  | :---: | :---: | :--- |
+  | id | Number | Recipe id |
+  | title | String | Recipe title |
+  | image | String | Recipe image |
+  | page | Number | Next page number |
+  | totalPage | Number | Total pages |
 
 
 * `User Recipe Object`
 
   * `Recipe List Object`
 
-| Field | Type | Description |
-| :---: | :---: | :--- |
-| id | Number | Recipe id |
-| title | String | Recipe title |
-
+  | Field | Type | Description |
+  | :---: | :---: | :--- |
+  | id | Number | Recipe id |
+  | title | String | Recipe title |
+  
   * `User Recipe Object`
 
-| Field | Type | Description |
-| :---: | :---: | :--- |
-| id | Number | Recipe id |
-| title | String | Recipe title |
-| mainImage | String | Recipe main image |
-| likes | Number | Recipe likes |
-| user_id | Number | Recipe creator |
-| ingredient | Array of String | Recipe ingredients |
-| amount | Array of String | Recipe ingredients quantity |
-| step | Array of String | Recipe steps |
-| image | Array of String | Recipe images for steps |
+  | Field | Type | Description |
+  | :---: | :---: | :--- |
+  | id | Number | Recipe id |
+  | title | String | Recipe title |
+  | mainImage | String | Recipe main image |
+  | likes | Number | Recipe likes |
+  | user_id | Number | Recipe creator |
+  | ingredient | Array of String | Recipe ingredients |
+  | amount | Array of String | Recipe ingredients quantity |
+  | step | Array of String | Recipe steps |
+  | image | Array of String | Recipe images for steps |
 
