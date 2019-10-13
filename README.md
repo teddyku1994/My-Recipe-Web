@@ -17,6 +17,7 @@ Website URL: https://bookncode.com
   - [Vegetable and Fruit Price Search](#Vegetable-and-Fruit-Price-Search)
   - [User Recipes Management](#User-Recipes-Management)
   - [User Basic Functions](#User-Basic-Functions)
+- [APIs Documentation](#APIs-Documentation)
 - [Contact](#Contact)
 
 ## Technologies
@@ -154,6 +155,11 @@ Website URL: https://bookncode.com
 - Users can add recipe to their favorite and manage favorites in their profile
 - Users can also like recipes which is then used to render popular recipes
 - Profile page also allow users to change basic information and password
+
+### APIs Documentation
+
+For details on APIs request and response, click the link below:  
+[APIs Doc.](https://github.com/teddyku1994/My-Recipe-Web/blob/master/doc/APIs.md)
 
 ## Contact
 
