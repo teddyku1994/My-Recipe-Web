@@ -112,7 +112,7 @@ bookncode.com
 
 * `User Profile Object`
 
-  * `Basic Info Object`  
+  * `Basic Info Object`    
   
   | Field | Type | Description |
   | :---: | :---: | :--- |
@@ -121,7 +121,7 @@ bookncode.com
   | email | String | User email |
   | image | Number | Profile display picture |
 
-  * `User Favorites Object`  
+  * `User Favorites Object`    
   
   | Field | Type | Description |
   | :---: | :---: | :--- |
@@ -133,14 +133,14 @@ bookncode.com
 
 * `User Recipe Object`
 
-  * `Recipe List Object`  
+  * `Recipe List Object`    
   
   | Field | Type | Description |
   | :---: | :---: | :--- |
   | id | Number | Recipe id |
   | title | String | Recipe title |
   
-  * `User Recipe Object`  
+  * `User Recipe Object`    
   
   | Field | Type | Description |
   | :---: | :---: | :--- |
