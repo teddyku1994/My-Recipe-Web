@@ -159,7 +159,8 @@ Website URL: https://bookncode.com
 ### APIs Documentation
 
 For details on APIs request and response, click the link below:  
-[APIs Doc.](https://github.com/teddyku1994/My-Recipe-Web/blob/master/doc/APIs.md)
+  
+Link: [APIs Doc.](https://github.com/teddyku1994/My-Recipe-Web/blob/master/doc/APIs.md)
 
 ## Contact
 
