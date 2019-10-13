@@ -112,8 +112,8 @@ bookncode.com
 
 * `User Profile Object`
 
-  * `Basic Info Object`
-  <br>
+  * `Basic Info Object`  
+  
   | Field | Type | Description |
   | :---: | :---: | :--- |
   | id | Number | User id |
@@ -121,8 +121,8 @@ bookncode.com
   | email | String | User email |
   | image | Number | Profile display picture |
 
-  * `User Favorites Object`
-  <br>
+  * `User Favorites Object`  
+  
   | Field | Type | Description |
   | :---: | :---: | :--- |
   | id | Number | Recipe id |
@@ -133,15 +133,15 @@ bookncode.com
 
 * `User Recipe Object`
 
-  * `Recipe List Object`
-  <br>
+  * `Recipe List Object`  
+  
   | Field | Type | Description |
   | :---: | :---: | :--- |
   | id | Number | Recipe id |
   | title | String | Recipe title |
   
-  * `User Recipe Object`
-  <br>
+  * `User Recipe Object`  
+  
   | Field | Type | Description |
   | :---: | :---: | :--- |
   | id | Number | Recipe id |
@@ -173,7 +173,7 @@ bookncode.com
 
 * **Request Example:**
 
-`https://[HOST_NAME]/api/1.0/search?dishName=牛肉麵&page=0`
+`https://[HOST_NAME]/api/1.0/search?dishName=牛肉麵&page=0`  
 `https://[HOST_NAME]/api/1.0/search?ingredient=醬油%2C雞&page=0`
 
 * **Success Response: 200**
