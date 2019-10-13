@@ -234,6 +234,7 @@ const editSubmit = async () => {
     fd.append("name", userName.value)
     fd.append("id", userId.value)
     fd.append("dp", dp.src)
+    fd.append("status", "updateDp")
     if(file.files[0]) {
       let imagetype = ["jpg", "jpeg", "png", "gif"]
       let type = file.files[0].type.split("/")[1].toLowerCase()
@@ -302,12 +303,12 @@ const pwSubmit = async () => {
   loading.style.visibility = "visible"
 
   let body = {
-    search: "updatePw",
+    status: "updatePw",
     oldPw: oldPw,
     newPw: newPw
   }
 
-  let pwUpdate = await fetching("/user/profile", "POST", {
+  let pwUpdate = await fetching("/user/profile", "PUT", {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${accessToken}`
   }, JSON.stringify(body))
@@ -379,13 +380,13 @@ const renderMemberFav = async (page) => {
     if(response.data){
       for(let i = 0; i < response.data.length; i++){
         createElement("div", { atrs: {
-          id: response.data[i].recipe_id,
+          id: response.data[i].id,
           className:"favCon2"
         }}, favCon)
         let favCon2 = getClass("favCon2")
         createElement("a", { atrs: {
           className:"favLink",
-          href: `/recipe.html?id=${response.data[i].recipe_id}`
+          href: `/recipe.html?id=${response.data[i].id}`
         }}, favCon2[i])
         let favLink = getClass("favLink")
         createElement("img", { atrs: {

@@ -7,7 +7,7 @@ const file =  require('../util/file')
 module.exports = {
   getInfo: async (userId, error) => {
     try {
-      let sql = `SELECT * FROM user WHERE id = ?`
+      let sql = `SELECT id, name, email, image FROM user WHERE id = ?`
       let userData = await connection.sqlQuery(sql, userId, error)
       if(userData.length === 0) return util.error('Invalid userId')
       if(userData[0].image) {
@@ -23,7 +23,6 @@ module.exports = {
   },
   update: async (userId, info, error) => {
     try {
-      console.log(info)
       let sql
       let result
       if(!info[1]) {
@@ -51,7 +50,7 @@ module.exports = {
   },
   listRecipe: async (userId, error) => {
     try {
-      let sql = 'SELECT * FROM recipe WHERE user_id = ?'
+      let sql = 'SELECT id, title FROM recipe WHERE user_id = ?'
       let result = await connection.sqlQuery(sql, userId, error)
       if(result.length === 0) return util.error('No Result')
       let data = {data:result}
@@ -154,7 +153,6 @@ module.exports = {
       for(let i = 0; i < file.images.length; i++) {
         let item = image.find((item) => item >= 0)
         let imageURL = image[image.indexOf(item)].replace(item, file.images[i].location.replace('https://myrecipsebucket.s3.amazonaws.com', ''))
-        console.log("imageURL", imageURL)
         image.splice(image.indexOf(item) ,1 ,imageURL)
       }
     }
@@ -196,7 +194,6 @@ module.exports = {
                 con.rollback(() => con.release())
                 return "error"
               }
-              console.log("ok1")
             })
             let sql2 = 'UPDATE ingredient SET name = ?, amount = ? WHERE recipe_id = ?'
             con.query(sql2, [ingredient, amount, body.recipeId], (error, result) => {
@@ -204,7 +201,6 @@ module.exports = {
                 reject(error);
                 return con.rollback(() => con.release())
               }
-              console.log("ok2")
             })
             let sql3 = 'DELETE FROM method WHERE recipe_id = ?'
             con.query(sql3, body.recipeId, (error, result) => {
@@ -212,10 +208,8 @@ module.exports = {
                 reject(error);
                 return con.rollback(() => con.release())
               }
-              console.log("ok3")
             })
             method.map(item => item.push(body.recipeId))
-            console.log(method)
             let sql4 = `INSERT INTO method (step, image, recipe_id) VALUES ?`
             con.query(sql4, [method], (error, result) => {
               if(error) {
@@ -251,7 +245,6 @@ module.exports = {
       for(let i = 0; i < methodImg.length; i++) {
         if(newImgArr.indexOf(methodImg[i]) === -1) {
           let imageURL = methodImg[i].substr(1, methodImg[i].length - 1)
-          console.log("imageURL",imageURL)
           await file.deleteS3File(imageURL)
         }
       }
@@ -267,7 +260,6 @@ module.exports = {
       let sql2 = 'SELECT recipe.image AS mainImg, method.image  FROM recipe LEFT JOIN method ON recipe.id = method.recipe_id WHERE recipe.id = ?'
       let recipeImages = await connection.sqlQuery(sql2, body.recipeId, error)
       let mainImageURL = recipeImages[0].mainImg.substr(1, recipeImages[0].mainImg.length - 1)
-      console.log(mainImageURL)
       await file.deleteS3File(mainImageURL)
       let imagesURL = recipeImages.map(images => images.image)
       for(let i = 0; i < imagesURL.length; i++) {

@@ -77,6 +77,7 @@ router.get('/recipe/hots', async (req, res) => {
 
     let cacheResponse = await cache.getSetCache('hots', error)
     if(cacheResponse) return res.json(cacheResponse)
+    
     let hotRecipes = await recipe.listHots(16, error)
     if(hotRecipes.data.length === 0) return res.json(util.error('No Result'))
     await cache.createSetCache('hots', 21600, JSON.stringify(hotRecipes), error)

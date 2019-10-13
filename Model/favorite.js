@@ -28,7 +28,7 @@ module.exports = {
       let data= {}
       let offset = page*limit
       let sql = `
-      SELECT favorite.*, recipe.*
+      SELECT recipe.id, recipe.title, recipe.image
       FROM favorite
       JOIN recipe
       ON favorite.recipe_id = recipe.id

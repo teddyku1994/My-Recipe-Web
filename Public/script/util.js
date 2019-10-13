@@ -87,7 +87,11 @@ const verifyStatus = async () => {
 const doubleCheckStatus = async () => {
 	try {
 		let status = await verifyStatus()
-		if(!status.status === "Valid Token") return window.location = "/index.html"
+		if(!status.status === "Valid Token") {
+			alert("請重新登入，謝謝")
+			window.location = "/index.html"
+			return 
+		}
 	} catch (err) {
 		window.location = "/index.html"
 	}

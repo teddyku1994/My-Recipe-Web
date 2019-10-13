@@ -105,7 +105,7 @@ module.exports = {
   },
   listHots: async (limit, error) => {
     try {
-      let sql = 'SELECT * FROM recipe ORDER BY likes DESC LIMIT ?'
+      let sql = 'SELECT id, title, image, likes FROM recipe ORDER BY likes DESC LIMIT ?'
       let hotRecipes = await connection.sqlQuery(sql, limit, error)
       for(let i = 0; i<hotRecipes.length; i++) {
         if(!hotRecipes[i].image.includes("https://")) {

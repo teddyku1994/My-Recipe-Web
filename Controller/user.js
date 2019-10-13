@@ -41,14 +41,11 @@ router.post('/user/profile', verification.verifyContentType, verification.verify
     let error = error => console.log(error)
     let body = req.body
     if(body.search === 'basicInfo') {
-      let result = await profile.getInfo(req.userId, error)
-      res.json(result)
+      let basicInfo = await profile.getInfo(req.userId, error)
+      res.json(basicInfo)
     } else if(body.search === 'favInfo') {
-      let result = await favorite.list(req.userId, 4, body.page, error)
-      res.json(result)
-    } else if(body.search === 'updatePw') {
-      let result = await user.changePw(body, req.userId, error)
-      res.json(result)
+      let favInfo = await favorite.list(req.userId, 4, body.page, error)
+      res.json(favInfo)
     } else {
       res.json(util.error('Invalid Token'))
     } 
@@ -61,13 +58,20 @@ router.put('/user/profile', verification.verifyToken, file.uploadProfileImg, asy
   try {
     let error = error => console.log(error)
     let body = req.body
-    let info = []
-    let dp
-    req.files.profilePic ? dp = req.files.profilePic[0].location.replace('https://myrecipsebucket.s3.amazonaws.com', '') : dp = null
-    info.push(body.name)
-    info.push(dp)
-    let result = await profile.update(req.userId, info, error)
-    res.json(result)
+    if(body.status === 'updateDp') {
+      let info = []
+      let dp
+      req.files.profilePic ? dp = req.files.profilePic[0].location.replace('https://myrecipsebucket.s3.amazonaws.com', '') : dp = null
+      info.push(body.name)
+      info.push(dp)
+      let updateDp = await profile.update(req.userId, info, error)
+      res.json(updateDp)
+    } else if(body.status === 'updatePw') {
+      let updatePw = await user.changePw(body, req.userId, error)
+      res.json(updatePw)
+    } else {
+      res.json(util.error('Invalid Token'))
+    } 
   } catch (err) {
     util.errorHandling(err, res)
   }
@@ -108,9 +112,11 @@ router.post('/user/recipe', verification.verifyContentType, verification.verifyT
   
     if(status === "list"){
       let recipeList = await profile.listRecipe(userId, error)
+      console.log(recipeList)
       return res.json(recipeList)
     } else if(status === "update"){
       let userRecipe = await profile.userRecipe(userId, body.recipeId, error)
+      console.log(userRecipe)
       res.json(userRecipe)
     } else {
       res.json(util.error('Invalid Method'))
