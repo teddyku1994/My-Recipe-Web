@@ -169,7 +169,7 @@ module.exports = {
       console.log (err)
     }
   },
-  greenPriceCralwer: async (keywords) => {
+  greenPriceCrawler: async (keywords) => {
     try {
       let keyword = encodeURI(keywords)
       let url = `https://www.twfood.cc/search?q=${keyword}`

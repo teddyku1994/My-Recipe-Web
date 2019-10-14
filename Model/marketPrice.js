@@ -36,7 +36,7 @@ module.exports = {
           let greenPriceData = await priceExist(userId, cacheResponse)
           return greenPriceData
         }
-        let greenPrice = await crawl.greenPriceCralwer(body.keywords)
+        let greenPrice = await crawl.greenPriceCrawler(body.keywords)
         if(!greenPrice) return (util.error('No Result'))
         greenPriceData = await priceExist(userId, greenPrice)
         await cache.createHashCache("greens", body.keywords, JSON.stringify(greenPrice))
