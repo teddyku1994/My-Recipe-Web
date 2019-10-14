@@ -190,7 +190,7 @@ const editBasic = async () => {
     userName.style.border = "1px solid #ccc"
   } else {
     body = {
-      search: "basicInfo"
+      status: "basicInfo"
     }
     editSubmit.style.visibility = "hidden"
     file.style.visibility = "hidden"
@@ -227,7 +227,7 @@ const editSubmit = async () => {
     let dp = getId("dp")
     let loading = getId("loading")
     let accessToken = localStorage.getItem("accessToken")
-    let fd = new FormData();
+    let fd = new FormData()
     
     editSubmit.innerText = ""
   
