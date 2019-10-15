@@ -9,3 +9,5 @@
 
 # others
 .DS_Store
+
+.eslintrc.json
