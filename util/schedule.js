@@ -19,7 +19,7 @@ schedule.scheduleJob('30 30 11 * * *', async function() {
 })
 
 // Delete & Update Green Price
-schedule.scheduleJob('0 18 * * 7', async function() {
+schedule.scheduleJob('*/5 * * * *', async function() {
   try {
     console.log("Updating")
     await db.redis.delAsync('greens')
@@ -40,7 +40,6 @@ schedule.scheduleJob('0 18 * * 7', async function() {
       userIds.map(async (user) => {
         let userId = user.id
         let userList = await db.redis.hgetallAsync(userId)
-        console.log(userList)
         await db.redis.hdelAsync('userList', userId)
         if(userList) {
           Object.keys(userList).map(async (key) => {
