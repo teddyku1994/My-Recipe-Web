@@ -19,7 +19,7 @@ schedule.scheduleJob('30 30 11 * * *', async function() {
 })
 
 // Delete & Update Green Price
-schedule.scheduleJob('*/1 * * * *', async function() {
+schedule.scheduleJob('0 18 * * 7', async function() {
   try {
     console.log("Updating")
     await db.redis.delAsync('greens')
