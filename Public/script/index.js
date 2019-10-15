@@ -36,7 +36,7 @@ const hots = async () => {
 
   let hotRecipes = await fetching("/recipe/hots", "GET", {"Content-Type": "application/json",}, null)
 
-  !hotRecipes.error ? render(hotRecipes) : console.log(hotRecipes)
+  !hotRecipes.error ? render(hotRecipes) : console.log("hotRecipes render failed")
 }
 
 const recipeSearch3 = () => {

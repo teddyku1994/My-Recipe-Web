@@ -214,9 +214,6 @@ const nextPages = (num, args, totalPage) => {
  let pages =getClass("page")
  page.innerHTML = ""
  let newPages = parseInt(totalPage - num)
- console.log(num)
- console.log(totalPage)
- console.log(newPages)
  createElement("div", {
   atrs: {
     className: "previousPages",
@@ -247,7 +244,6 @@ const nextPages = (num, args, totalPage) => {
     }
   }, page)
  } else {
-  console.log(length)
   for (let i=0; i <= newPages; i++){
     createElement("div", {
       atrs: {

@@ -4,12 +4,12 @@ const recipeRouter = require('./Controller/recipe')
 const nutrientRouter = require('./Controller/nutrient')
 const userRouter = require('./Controller/user')
 const marketPrice = require('./Controller/marketPrice')
-const schedule = require('./util/schedule')
+// const schedule = require('./util/schedule')
 const cst = require('./util/const')
 const path = require('path')
 
 const app = express()
-const PORT = 8000;
+const PORT = 8000
 
 app.use(express.json());
 app.use(bodyPasrser.urlencoded({ extended: false }))
@@ -17,16 +17,8 @@ app.use(bodyPasrser.json())
 app.use('/', express.static(path.join(__dirname, 'Public')))
 
 //Schedule Update
-schedule.deleteKeywords('7 DAY')
-schedule.greenPriceUpdate()
-
-//app.use("/api/", function(req, res, next){
-// 	res.set("Access-Control-Allow-Origin", "*");
-// 	res.set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization");
-// 	res.set("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS");
-// 	res.set("Access-Control-Allow-Credentials", "true");
-// 	next();
-// });
+// schedule.deleteKeywords('7 DAY')
+// schedule.greenPriceUpdate()
 
 console.log("Date:",Date())
 

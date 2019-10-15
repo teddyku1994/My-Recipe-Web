@@ -67,7 +67,9 @@ module.exports = {
         let userInfo = {
           accessToken: token
         }
-        if(account[0].image) userInfo.dp = `https://d1lpqhjzd6rmjw.cloudfront.net${account[0].image}`
+        if(account[0].image) {
+          !account[0].image.includes('https') ? userInfo.dp = `https://d1lpqhjzd6rmjw.cloudfront.net${account[0].image}` : userInfo.dp = account[0].image
+        }
         return userInfo
       } else if(body.provider === "facebook") {
         let fbPath = `https://graph.facebook.com/v4.0/me?fields=name,email,picture.height(350).width(350)&access_token=${body.accessToken}`

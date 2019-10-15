@@ -9,7 +9,6 @@ module.exports={
       let token = jwt.sign({userId:userId}, process.env.JWT_KEY, {expiresIn:'1 day'})
       return token 
     } catch (err) {
-      console.log(err)
       return util.error('Invalid Token')
     }
   },
@@ -21,7 +20,6 @@ module.exports={
       req.userId = decoded.userId
       next()
     } catch (err) {
-      console.log(err)
       return res.json(util.error('Not Authorized'))
     }
   },
@@ -30,7 +28,6 @@ module.exports={
       if(req.header('Content-Type') !== "application/json") return res.json(util.error('Header is not in application/json'))
       next()
     } catch (err) {
-      console.log(err)
       return res.json(util.error('Invalid Token'))
     }
   }

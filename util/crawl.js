@@ -91,7 +91,7 @@ module.exports = {
       return 'All Done'
 
     } catch (err) {
-      console.log(err)
+      throw err
     }
   },
   ingredientCralwer: async (keywords) => {
@@ -274,7 +274,7 @@ module.exports = {
       return data
 
     } catch (err) {
-      console.log(err)
+      throw err
     }
   },
   greenPriceCrawler2: async (links) => {
@@ -375,7 +375,7 @@ module.exports = {
       return data
 
     } catch (err) {
-      console.log(err)
+      throw err
     }
   }
 }
