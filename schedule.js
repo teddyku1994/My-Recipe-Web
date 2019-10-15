@@ -1,9 +1,9 @@
 const express = require('express')
 const schedule = require('node-schedule');
-const recipe = require('../Model/recipe');
-const crawl = require('../util/crawl')
-// const mysql = require('../Model/promiseFunc')
-const db = require('../db/dbConnect')
+const recipe = require('./Model/recipe');
+const crawl = require('./util/crawl')
+const mysql = require('./Model/promiseFunc')
+const db = require('./db/dbConnect')
 
 const app = express()
 const PORT = 3000
@@ -36,32 +36,30 @@ schedule.scheduleJob('*/1 * * * *', async function() {
       console.log('Updating User')
       let error = error => console.log(error)
       let sql = 'SELECT id from user'
-      // let userIds = await mysql.sqlQuery(sql, null, error)
-      db.pool.query(sql, (err, userIds) => {
-        userIds.map(async (user) => {
-          let userId = user.id
-          let userList = await db.redis.hgetallAsync(userId)
-          await db.redis.hdelAsync('userList', userId)
-          if(userList) {
-            Object.keys(userList).map(async (key) => {
-              if(key.includes('new')) {
-                let newKey = key.replace('new','')
-                let args = {}
-                args[newKey] = [userList[key],1].join(",")
-                await db.redis.hmsetAsync(userId, args)
-                await db.redis.hdelAsync(userId, key)
-                let newPrice = await db.redis.hgetAsync('greens', newKey)
-                args2 = {}
-                args2[key] = JSON.parse(newPrice).data[0].price.join(',')
-                await db.redis.hmsetAsync(userId, args2)
-              }
-            })
-          }
-        }) 
-      })
+      let userIds = await mysql.sqlQuery(sql, null, error)
+      userIds.map(async (user) => {
+        let userId = user.id
+        let userList = await db.redis.hgetallAsync(userId)
+        await db.redis.hdelAsync('userList', userId)
+        if(userList) {
+          Object.keys(userList).map(async (key) => {
+            if(key.includes('new')) {
+              let newKey = key.replace('new','')
+              let args = {}
+              args[newKey] = [userList[key],1].join(",")
+              await db.redis.hmsetAsync(userId, args)
+              await db.redis.hdelAsync(userId, key)
+              let newPrice = await db.redis.hgetAsync('greens', newKey)
+              args2 = {}
+              args2[key] = JSON.parse(newPrice).data[0].price.join(',')
+              await db.redis.hmsetAsync(userId, args2)
+            }
+          })
+        }
+      }) 
     })
     .catch(err => {
-      console.log(err)
+      throw err
     })
   } catch (err) {
     console.log(err)
