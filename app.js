@@ -20,8 +20,6 @@ app.use('/', express.static(path.join(__dirname, 'Public')))
 // schedule.deleteKeywords('7 DAY')
 // schedule.greenPriceUpdate()
 
-console.log("Date:",Date())
-
 app.use(`/api/${cst.api_ver}/`, nutrientRouter, recipeRouter, userRouter, marketPrice)
 
 app.get('/', (req, res) => {
