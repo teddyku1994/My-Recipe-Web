@@ -2,7 +2,7 @@ const express = require('express')
 const schedule = require('node-schedule');
 const recipe = require('../Model/recipe');
 const crawl = require('../util/crawl')
-const mysql = require('../Model/promiseFunc')
+// const mysql = require('../Model/promiseFunc')
 const db = require('../db/dbConnect')
 
 const app = express()
@@ -19,7 +19,7 @@ schedule.scheduleJob('30 30 11 * * *', async function() {
 })
 
 // Delete & Update Green Price
-schedule.scheduleJob('*/5 * * * *', async function() {
+schedule.scheduleJob('*/1 * * * *', async function() {
   try {
     console.log("Updating")
     await db.redis.delAsync('greens')
@@ -37,7 +37,7 @@ schedule.scheduleJob('*/5 * * * *', async function() {
       let error = error => console.log(error)
       let sql = 'SELECT id from user'
       // let userIds = await mysql.sqlQuery(sql, null, error)
-      mysql.pool.query(sql, (err, userIds) => {
+      db.pool.query(sql, (err, userIds) => {
         userIds.map(async (user) => {
           let userId = user.id
           let userList = await db.redis.hgetallAsync(userId)
