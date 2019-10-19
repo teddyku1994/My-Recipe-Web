@@ -42,7 +42,10 @@ module.exports = {
       let sql2 = 'SELECT COUNT(*) FROM favorite WHERE user_id = ?'
       let total = await connection.sqlQuery(sql2, userId, error)
       let totalPage = total[0]['COUNT(*)']
-      util.paging2(limit, totalPage, page, data)
+      util.paging(limit, totalPage, page, data)
+      if(Math.floor(totalPage/limit) > 0 && totalPage > limit) {
+        data.totalPage = Math.ceil(totalPage/limit)
+      }
       return data
     } catch (err) {
       throw err
