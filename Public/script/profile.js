@@ -1189,7 +1189,7 @@ const deleteRecipe = async (recipeId) => {
     let deleteStatus = await fetching("/user/recipe", "DELETE", {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${accessToken}`
-    }, fd)
+    }, JSON.stringify(body))
     if(deleteStatus.status === "Success") {
       li.parentNode.removeChild(li)
       update.parentNode.removeChild(update)
