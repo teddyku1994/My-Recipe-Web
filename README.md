@@ -2,7 +2,7 @@
 
 My Recipe aims to be more than an regular receipe searching website, but a website with tools to provide more insight on the ingredients used for cooking a dish.
 <br>
-Website URL: https://bookncode.com
+Website URL: https://bookncode.com (Currently Closed)
 
 ## Table of Contents
 
